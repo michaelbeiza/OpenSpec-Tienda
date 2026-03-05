@@ -1,0 +1,11 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import App from '../../components/App';
+import RegisterPage from '../../components/pages/RegisterPage';
+---
+<Layout title="Registrarse">
+  <App client:only="react" currentPath="/register">
+    <RegisterPage client:only="react" />
+  </App>
+</Layout>
+

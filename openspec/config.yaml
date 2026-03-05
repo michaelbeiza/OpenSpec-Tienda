@@ -1,0 +1,28 @@
+project:
+  name: tienda-openspec
+  description: Tienda online con Astro, React y Supabase
+
+tech:
+  frontend:
+    - Astro
+    - React
+    - Tailwind
+  backend:
+    - Supabase
+    - Edge Functions
+  database:
+    - PostgreSQL (Supabase)
+  auth:
+    - JWT (Supabase)
+    - Email/Password
+
+features:
+  - Products Management
+  - Shopping Cart
+  - Checkout
+  - User Authentication
+  - Order History
+  - Payment Processing (Stripe/PayPal)
+  - Shipping Addresses
+  - Admin Panel
+  - Security (JWT, SQL Prevention)

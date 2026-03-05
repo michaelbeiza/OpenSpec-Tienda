@@ -1,0 +1,11 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import App from '../../components/App';
+import ProductsPage from '../../components/pages/ProductsPage';
+---
+<Layout title="Productos">
+  <App client:only="react" currentPath="/products">
+    <ProductsPage client:only="react" />
+  </App>
+</Layout>
+

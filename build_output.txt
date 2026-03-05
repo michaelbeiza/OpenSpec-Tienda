@@ -1,0 +1,54 @@
+﻿
+> tienda-openspec@0.0.1 build
+> astro build
+
+[2m14:22:56[22m [34m[content][39m Syncing content
+[2m14:22:56[22m [34m[content][39m Synced content
+[2m14:22:56[22m [34m[types][39m Generated [2m57ms[22m
+[2m14:22:56[22m [34m[build][39m output: [34m"static"[39m
+[2m14:22:56[22m [34m[build][39m mode: [34m"static"[39m
+[2m14:22:56[22m [34m[build][39m directory: [34mC:\tienda-openspec\dist\[39m
+[2m14:22:56[22m [34m[build][39m Collecting build info...
+[2m14:22:56[22m [34m[build][39m [32mΓ£ô Completed in 81ms.[39m
+[2m14:22:56[22m [34m[build][39m Building static entrypoints...
+node.exe : 
+[31m[1m14:22:57[22m 
+[ERROR] [vite][39m 
+[31mΓ£ù[39m Build 
+failed in 542ms
+At C:\Program Files\nod
+ejs\npm.ps1:29 char:3
++   & $NODE_EXE 
+$NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: ([31m[1m14:2   
+ 2:...failed in 542    
+ms:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+Could not resolve "../.
+./../components/App" 
+from "src/pages/product
+s/[id].astro"
+file: C:/tienda-openspe
+c/src/pages/products/[i
+d].astro
+  [1mStack trace:[22m
+[2m    at 
+getRollupError (file://
+/C:/tienda-openspec/nod
+e_modules/rollup/dist/e
+s/shared/parseAst.js:40
+2:41)
+    at ModuleLoader.han
+dleInvalidResolvedId (f
+ile:///C:/tienda-opensp
+ec/node_modules/rollup/
+dist/es/shared/node-ent
+ry.js:21710:24)[22m

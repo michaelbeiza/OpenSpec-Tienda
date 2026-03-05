@@ -1,0 +1,11 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import App from '../../components/App';
+import LoginPage from '../../components/pages/LoginPage';
+---
+<Layout title="Iniciar sesión">
+  <App client:only="react" currentPath="/login">
+    <LoginPage client:only="react" />
+  </App>
+</Layout>
+

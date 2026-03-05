@@ -1,0 +1,145 @@
+﻿{
+  "changeName": "tienda-online",
+  "changeDir": "C:\\tienda-openspec\\openspec\\changes\\tienda-online",
+  "schemaName": "spec-driven",
+  "contextFiles": {
+    "proposal": "C:\\tienda-openspec\\openspec\\changes\\tienda-online\\proposal.md",
+    "specs": "C:\\tienda-openspec\\openspec\\changes\\tienda-online\\specs\\**\\*.md",
+    "design": "C:\\tienda-openspec\\openspec\\changes\\tienda-online\\design.md",
+    "tasks": "C:\\tienda-openspec\\openspec\\changes\\tienda-online\\tasks.md"
+  },
+  "progress": {
+    "total": 25,
+    "complete": 0,
+    "remaining": 25
+  },
+  "tasks": [
+    {
+      "id": "1",
+      "description": "1.1 Initialize Astro + React project structure (if not already done)",
+      "done": false
+    },
+    {
+      "id": "2",
+      "description": "1.2 Set up Supabase client in the project",
+      "done": false
+    },
+    {
+      "id": "3",
+      "description": "1.3 Configure environment variables for Supabase (URL, Anon Key)",
+      "done": false
+    },
+    {
+      "id": "4",
+      "description": "1.4 Setup routing structure for main pages (Home, Products, Cart, Checkout, Login, Admin)",
+      "done": false
+    },
+    {
+      "id": "5",
+      "description": "2.1 Create `users` table/logic extending Supabase Auth (roles: admin/user)",
+      "done": false
+    },
+    {
+      "id": "6",
+      "description": "2.2 Create `products` table (id, name, description, price, inventory, image_url)",
+      "done": false
+    },
+    {
+      "id": "7",
+      "description": "2.3 Create `orders` and `order_items` tables",
+      "done": false
+    },
+    {
+      "id": "8",
+      "description": "2.4 Create `reviews` table",
+      "done": false
+    },
+    {
+      "id": "9",
+      "description": "2.5 Implement Row Level Security (RLS) policies for all tables (Admins: all access, Users: read products, read/write own orders/reviews)",
+      "done": false
+    },
+    {
+      "id": "10",
+      "description": "3.1 Build Login and Registration UI components",
+      "done": false
+    },
+    {
+      "id": "11",
+      "description": "3.2 Implement Supabase Auth integration for sign in/up/out",
+      "done": false
+    },
+    {
+      "id": "12",
+      "description": "3.3 Create a protected route higher-order component or middleware to restrict pages based on auth state and role",
+      "done": false
+    },
+    {
+      "id": "13",
+      "description": "4.1 Build Admin interface to add, edit (price), and delete products",
+      "done": false
+    },
+    {
+      "id": "14",
+      "description": "4.2 Build public Product Listing page with filtering capabilities",
+      "done": false
+    },
+    {
+      "id": "15",
+      "description": "4.3 Build public Product Details page",
+      "done": false
+    },
+    {
+      "id": "16",
+      "description": "5.1 Implement global state management for the Cart (Zustand or React Context)",
+      "done": false
+    },
+    {
+      "id": "17",
+      "description": "5.2 Build \"Add to Cart\" functionality on product pages",
+      "done": false
+    },
+    {
+      "id": "18",
+      "description": "5.3 Build the Cart UI (drawer or dedicated page) to view, update quantities, and remove items",
+      "done": false
+    },
+    {
+      "id": "19",
+      "description": "5.4 Calculate and display subtotal and totals",
+      "done": false
+    },
+    {
+      "id": "20",
+      "description": "6.1 Build Checkout form to capture shipping and billing details",
+      "done": false
+    },
+    {
+      "id": "21",
+      "description": "6.2 Integrate payment gateway mock or real provider (e.g., Stripe)",
+      "done": false
+    },
+    {
+      "id": "22",
+      "description": "6.3 Implement logic to save the order to Supabase upon successful payment and clear the cart",
+      "done": false
+    },
+    {
+      "id": "23",
+      "description": "7.1 Build User Profile page to display past orders",
+      "done": false
+    },
+    {
+      "id": "24",
+      "description": "7.2 Implement \"Write a Review\" form on the Product Details page for authenticated users",
+      "done": false
+    },
+    {
+      "id": "25",
+      "description": "7.3 Display product reviews and calculate average rating",
+      "done": false
+    }
+  ],
+  "state": "ready",
+  "instruction": "Read context files, work through pending tasks, mark complete as you go.\nPause if you hit blockers or need clarification."
+}
