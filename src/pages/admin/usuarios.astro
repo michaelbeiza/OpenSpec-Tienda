@@ -1,0 +1,7 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminUsuariosWrapper from '../../components/wrappers/AdminUsuariosWrapper';
+---
+<AdminLayout title="Usuarios">
+  <AdminUsuariosWrapper client:only="react" />
+</AdminLayout>

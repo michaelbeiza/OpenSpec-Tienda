@@ -1,11 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import App from '../../components/App';
-import CartPage from '../../components/pages/CartPage';
+import CartWrapper from '../../components/wrappers/CartWrapper';
 ---
 <Layout title="Carrito">
-  <App client:only="react" currentPath="/cart">
-    <CartPage client:only="react" />
-  </App>
+  <CartWrapper client:only="react" />
 </Layout>
 

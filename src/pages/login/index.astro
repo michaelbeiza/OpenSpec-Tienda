@@ -1,11 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import App from '../../components/App';
-import LoginPage from '../../components/pages/LoginPage';
+import LoginWrapper from '../../components/wrappers/LoginWrapper';
 ---
 <Layout title="Iniciar sesión">
-  <App client:only="react" currentPath="/login">
-    <LoginPage client:only="react" />
-  </App>
+  <LoginWrapper client:only="react" />
 </Layout>
 

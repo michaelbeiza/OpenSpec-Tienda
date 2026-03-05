@@ -1,11 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import App from '../../components/App';
-import AdminPage from '../../components/pages/AdminPage';
+import AdminIndexWrapper from '../../components/wrappers/AdminIndexWrapper';
 ---
 <Layout title="Administración">
-  <App client:only="react" currentPath="/admin">
-    <AdminPage client:only="react" />
-  </App>
+  <AdminIndexWrapper client:only="react" />
 </Layout>
 

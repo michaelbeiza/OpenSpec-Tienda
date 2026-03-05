@@ -1,11 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import App from '../../components/App';
-import ProfilePage from '../../components/pages/ProfilePage';
+import ProfileWrapper from '../../components/wrappers/ProfileWrapper';
 ---
 <Layout title="Mi Cuenta">
-  <App client:only="react" currentPath="/profile">
-    <ProfilePage client:only="react" />
-  </App>
+  <ProfileWrapper client:only="react" />
 </Layout>
 

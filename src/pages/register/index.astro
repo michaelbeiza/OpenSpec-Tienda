@@ -1,11 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import App from '../../components/App';
-import RegisterPage from '../../components/pages/RegisterPage';
+import RegisterWrapper from '../../components/wrappers/RegisterWrapper';
 ---
 <Layout title="Registrarse">
-  <App client:only="react" currentPath="/register">
-    <RegisterPage client:only="react" />
-  </App>
+  <RegisterWrapper client:only="react" />
 </Layout>
 

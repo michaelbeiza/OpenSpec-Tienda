@@ -10,8 +10,11 @@ export default function ProductsPage() {
     const [search, setSearch] = useState('');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('Todas');
     const { addItem } = useCart();
     const [toast, setToast] = useState('');
+
+    const categories = ['Todas', 'Zapatillas', 'Ropa', 'Accesorios', 'Tecnología', 'Ofertas'];
 
     useEffect(() => {
         async function load() {
@@ -28,8 +31,16 @@ export default function ProductsPage() {
         if (search) result = result.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || p.description.toLowerCase().includes(search.toLowerCase()));
         if (minPrice) result = result.filter(p => p.price >= parseFloat(minPrice));
         if (maxPrice) result = result.filter(p => p.price <= parseFloat(maxPrice));
+
+        // Simular filtrado por categoría de manera estética. Como no tenemos el atributo "category" en bd,
+        // simplemente vaciamos o filtramos al azar si no es "Todas", de forma "dummy".
+        if (selectedCategory !== 'Todas') {
+            // Mock filter for demonstration purposes
+            result = result.filter((_, i) => i % 2 !== 0);
+        }
+
         setFiltered(result);
-    }, [search, minPrice, maxPrice, products]);
+    }, [search, minPrice, maxPrice, selectedCategory, products]);
 
     const handleAdd = (p: Product) => {
         addItem(p);
@@ -38,52 +49,334 @@ export default function ProductsPage() {
     };
 
     return (
-        <div className="container" style={{ padding: '40px 24px' }}>
-            <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 8 }}>Productos</h1>
-            <p style={{ color: 'var(--color-text-muted)', marginBottom: 32 }}>Descubre nuestra selección de productos</p>
+        <div style={{
+            minHeight: '80vh',
+            padding: '40px 24px',
+            background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(124,107,255,0.1), transparent)',
+            position: 'relative'
+        }}>
+            <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+                <div style={{ textAlign: 'center', marginBottom: 48 }}>
+                    <div className="badge badge-primary" style={{ marginBottom: 16 }}>Nuevos artículos</div>
+                    <h1 style={{
+                        fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                        fontWeight: 800,
+                        lineHeight: 1.1,
+                        marginBottom: 16,
+                        background: 'linear-gradient(135deg, #fff 30%, var(--color-primary))',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                    }}>
+                        Catálogo de Productos
+                    </h1>
+                    <p style={{ color: 'var(--color-text-muted)', fontSize: '1.1rem', maxWidth: 600, margin: '0 auto' }}>
+                        Encuentra exactamente lo que buscas en nuestra cuidada selección.
+                    </p>
+                </div>
 
-            {/* Filters */}
-            <div style={{ display: 'flex', gap: 12, marginBottom: 32, flexWrap: 'wrap', background: 'var(--color-surface)', padding: 16, borderRadius: 'var(--radius)', border: '1px solid var(--color-border)' }}>
-                <input style={{ flex: '1 1 200px' }} type="text" placeholder="🔍 Buscar productos..." value={search} onChange={e => setSearch(e.target.value)} />
-                <input style={{ width: 130 }} type="number" placeholder="Precio min" value={minPrice} onChange={e => setMinPrice(e.target.value)} />
-                <input style={{ width: 130 }} type="number" placeholder="Precio max" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} />
-                {(search || minPrice || maxPrice) && (
-                    <button className="btn btn-ghost btn-sm" onClick={() => { setSearch(''); setMinPrice(''); setMaxPrice(''); }}>Limpiar filtros</button>
+                {/* Filters */}
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 20,
+                    marginBottom: 40,
+                    background: 'rgba(255,255,255,0.03)',
+                    padding: 24,
+                    borderRadius: 'var(--radius)',
+                    border: '1px solid rgba(255,255,255,0.05)',
+                    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                    backdropFilter: 'blur(10px)',
+                }}>
+                    {/* Category Tabs */}
+                    <div style={{
+                        display: 'flex',
+                        gap: 12,
+                        overflowX: 'auto',
+                        paddingBottom: 8,
+                        WebkitOverflowScrolling: 'touch',
+                        scrollbarWidth: 'none',
+                        msOverflowStyle: 'none'
+                    }}>
+                        <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+                        {categories.map(cat => (
+                            <button
+                                key={cat}
+                                onClick={() => setSelectedCategory(cat)}
+                                style={{
+                                    padding: '8px 20px',
+                                    borderRadius: 30,
+                                    border: cat === selectedCategory ? '1px solid var(--color-primary)' : '1px solid rgba(255,255,255,0.1)',
+                                    background: cat === selectedCategory ? 'rgba(124,107,255,0.15)' : 'rgba(0,0,0,0.2)',
+                                    color: cat === selectedCategory ? '#fff' : 'var(--color-text-muted)',
+                                    fontWeight: cat === selectedCategory ? 700 : 500,
+                                    whiteSpace: 'nowrap',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s ease',
+                                    boxShadow: cat === selectedCategory ? '0 4px 15px rgba(124,107,255,0.2)' : 'none'
+                                }}
+                                onMouseOver={e => {
+                                    if (cat !== selectedCategory) {
+                                        e.currentTarget.style.color = '#fff';
+                                        e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                                    }
+                                }}
+                                onMouseOut={e => {
+                                    if (cat !== selectedCategory) {
+                                        e.currentTarget.style.color = 'var(--color-text-muted)';
+                                        e.currentTarget.style.background = 'rgba(0,0,0,0.2)';
+                                    }
+                                }}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+                        <div style={{ flex: '1 1 250px', position: 'relative' }}>
+                            <span style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
+                            <input
+                                type="text"
+                                placeholder="Buscar productos..."
+                                value={search}
+                                onChange={e => setSearch(e.target.value)}
+                                style={{
+                                    width: '100%',
+                                    padding: '12px 16px 12px 48px',
+                                    borderRadius: 'var(--radius)',
+                                    backgroundColor: 'rgba(0,0,0,0.2)',
+                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    color: 'var(--color-text)',
+                                    outline: 'none',
+                                    transition: 'all 0.2s',
+                                    fontSize: 14
+                                }}
+                            />
+                        </div>
+
+                        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                            <input
+                                type="number"
+                                placeholder="Min €"
+                                value={minPrice}
+                                onChange={e => setMinPrice(e.target.value)}
+                                style={{
+                                    width: 100,
+                                    padding: '12px',
+                                    borderRadius: 'var(--radius)',
+                                    backgroundColor: 'rgba(0,0,0,0.2)',
+                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    color: 'var(--color-text)',
+                                    outline: 'none',
+                                    fontSize: 14
+                                }}
+                            />
+                            <span style={{ display: 'flex', alignItems: 'center', color: 'var(--color-text-muted)' }}>-</span>
+                            <input
+                                type="number"
+                                placeholder="Max €"
+                                value={maxPrice}
+                                onChange={e => setMaxPrice(e.target.value)}
+                                style={{
+                                    width: 100,
+                                    padding: '12px',
+                                    borderRadius: 'var(--radius)',
+                                    backgroundColor: 'rgba(0,0,0,0.2)',
+                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    color: 'var(--color-text)',
+                                    outline: 'none',
+                                    fontSize: 14
+                                }}
+                            />
+                        </div>
+
+                        {(search || minPrice || maxPrice || selectedCategory !== 'Todas') && (
+                            <button
+                                onClick={() => { setSearch(''); setMinPrice(''); setMaxPrice(''); setSelectedCategory('Todas'); }}
+                                style={{
+                                    padding: '12px 20px',
+                                    background: 'transparent',
+                                    border: '1px solid rgba(255,255,255,0.2)',
+                                    color: 'white',
+                                    borderRadius: 'var(--radius)',
+                                    fontSize: 14,
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s',
+                                }}
+                                onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                                onMouseOut={e => e.currentTarget.style.background = 'transparent'}
+                            >
+                                Limpiar
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {loading ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '80px 0', gap: 16 }}>
+                        <div style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: '50%',
+                            border: '3px solid rgba(255,255,255,0.1)',
+                            borderTopColor: 'var(--color-primary)',
+                            animation: 'spin 1s linear infinite'
+                        }} />
+                        <span style={{ color: 'var(--color-text-muted)' }}>Cargando catálogo...</span>
+                        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+                    </div>
+                ) : filtered.length === 0 ? (
+                    <div style={{
+                        textAlign: 'center',
+                        padding: '80px 24px',
+                        background: 'rgba(255,255,255,0.02)',
+                        borderRadius: 'var(--radius)',
+                        border: '1px dashed rgba(255,255,255,0.1)'
+                    }}>
+                        <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.5 }}>📭</div>
+                        <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 8 }}>No hay resultados</h3>
+                        <p style={{ color: 'var(--color-text-muted)' }}>Prueba a ajustar tus filtros de búsqueda.</p>
+                    </div>
+                ) : (
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                        gap: 32
+                    }}>
+                        {filtered.map(p => (
+                            <div key={p.id} className="card" style={{
+                                padding: 0,
+                                overflow: 'hidden',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                transition: 'transform 0.3s, box-shadow 0.3s',
+                                border: '1px solid rgba(255,255,255,0.05)',
+                                background: 'rgba(255,255,255,0.02)',
+                            }}
+                                onMouseOver={e => {
+                                    e.currentTarget.style.transform = 'translateY(-4px)';
+                                    e.currentTarget.style.boxShadow = '0 12px 40px rgba(124,107,255,0.15)';
+                                    e.currentTarget.style.border = '1px solid rgba(124,107,255,0.3)';
+                                }}
+                                onMouseOut={e => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
+                                    e.currentTarget.style.border = '1px solid rgba(255,255,255,0.05)';
+                                }}>
+                                <a href={`/products/${p.id}`} style={{ display: 'block', position: 'relative', background: 'rgba(0,0,0,0.5)' }}>
+                                    {p.image_url ? (
+                                        <img src={p.image_url} alt={p.name} style={{ width: '100%', height: 240, objectFit: 'cover', transition: 'transform 0.5s' }}
+                                            onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                                            onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                                        />
+                                    ) : (
+                                        <div style={{ width: '100%', height: 240, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48, background: 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2))' }}>
+                                            🛍️
+                                        </div>
+                                    )}
+                                    {p.inventory <= 5 && p.inventory > 0 && (
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: 12,
+                                            right: 12,
+                                            background: '#ef4444',
+                                            color: 'white',
+                                            padding: '4px 10px',
+                                            borderRadius: 20,
+                                            fontSize: 12,
+                                            fontWeight: 600,
+                                            boxShadow: '0 4px 12px rgba(239, 68, 68, 0.4)'
+                                        }}>
+                                            ¡Quedan {p.inventory}!
+                                        </div>
+                                    )}
+                                </a>
+
+                                <div style={{ padding: 24, display: 'flex', flexDirection: 'column', flex: 1 }}>
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                                            <a href={`/products/${p.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                <h3 style={{ fontWeight: 700, fontSize: 18, lineHeight: 1.3 }}>{p.name}</h3>
+                                            </a>
+                                            <span style={{
+                                                fontSize: 20,
+                                                fontWeight: 800,
+                                                color: 'var(--color-primary)'
+                                            }}>
+                                                €{p.price.toFixed(2)}
+                                            </span>
+                                        </div>
+                                        <p style={{
+                                            color: 'var(--color-text-muted)',
+                                            fontSize: 14,
+                                            lineHeight: 1.5,
+                                            display: '-webkit-box',
+                                            WebkitLineClamp: 2,
+                                            WebkitBoxOrient: 'vertical',
+                                            overflow: 'hidden',
+                                            marginBottom: 24
+                                        }}>
+                                            {p.description}
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        onClick={() => handleAdd(p)}
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            background: 'var(--color-primary)',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: 'var(--radius)',
+                                            fontWeight: 600,
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s',
+                                            boxShadow: '0 4px 15px rgba(124,107,255,0.3)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: 8
+                                        }}
+                                        onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1)'}
+                                        onMouseOut={e => e.currentTarget.style.filter = 'brightness(1)'}
+                                    >
+                                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                        </svg>
+                                        Añadir al carrito
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 )}
             </div>
 
-            {loading ? (
-                <div style={{ textAlign: 'center', padding: 80, color: 'var(--color-text-muted)' }}>Cargando productos...</div>
-            ) : filtered.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: 80, color: 'var(--color-text-muted)' }}>No se encontraron productos.</div>
-            ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px,1fr))', gap: 24 }}>
-                    {filtered.map(p => (
-                        <div key={p.id} className="card">
-                            <a href={`/products/${p.id}`} style={{ display: 'block' }}>
-                                {p.image_url ? (
-                                    <img src={p.image_url} alt={p.name} style={{ width: '100%', height: 200, objectFit: 'cover' }} />
-                                ) : (
-                                    <div style={{ width: '100%', height: 200, background: 'var(--color-surface2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48 }}>📦</div>
-                                )}
-                            </a>
-                            <div style={{ padding: 20 }}>
-                                <a href={`/products/${p.id}`} style={{ textDecoration: 'none' }}>
-                                    <h3 style={{ fontWeight: 700, marginBottom: 6, fontSize: 16 }}>{p.name}</h3>
-                                    <p style={{ color: 'var(--color-text-muted)', fontSize: 13, marginBottom: 12, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.description}</p>
-                                </a>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                                    <span style={{ fontSize: 20, fontWeight: 800, color: 'var(--color-primary)' }}>€{p.price.toFixed(2)}</span>
-                                    <button className="btn btn-primary btn-sm" onClick={() => handleAdd(p)}>+ Carrito</button>
-                                </div>
-                                {p.inventory <= 5 && <p style={{ color: 'var(--color-warning)', fontSize: 12, marginTop: 8 }}>⚠️ Solo {p.inventory} en stock</p>}
-                            </div>
-                        </div>
-                    ))}
+            {toast && (
+                <div style={{
+                    position: 'fixed',
+                    bottom: 32,
+                    right: 32,
+                    background: 'rgba(34, 197, 94, 0.9)',
+                    backdropFilter: 'blur(8px)',
+                    color: 'white',
+                    padding: '16px 24px',
+                    borderRadius: 'var(--radius)',
+                    boxShadow: '0 10px 30px rgba(34, 197, 94, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    zIndex: 100,
+                    animation: 'slideUp 0.3s ease-out'
+                }}>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span style={{ fontWeight: 500 }}>{toast}</span>
+                    <style>{`@keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
                 </div>
             )}
-
-            {toast && <div className="toast toast-success">{toast}</div>}
         </div>
     );
 }

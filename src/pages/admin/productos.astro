@@ -1,0 +1,7 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminProductosWrapper from '../../components/wrappers/AdminProductosWrapper';
+---
+<AdminLayout title="Productos">
+  <AdminProductosWrapper client:only="react" />
+</AdminLayout>

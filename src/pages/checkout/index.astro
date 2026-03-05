@@ -1,11 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import App from '../../components/App';
-import CheckoutPage from '../../components/pages/CheckoutPage';
+import CheckoutWrapper from '../../components/wrappers/CheckoutWrapper';
 ---
 <Layout title="Checkout">
-  <App client:only="react" currentPath="/checkout">
-    <CheckoutPage client:only="react" />
-  </App>
+  <CheckoutWrapper client:only="react" />
 </Layout>
 
