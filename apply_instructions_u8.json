@@ -1,0 +1,80 @@
+﻿{
+  "changeName": "customer-auth-verification",
+  "changeDir": "C:\\Tienda\\OpenSpec-Tienda\\openspec\\changes\\customer-auth-verification",
+  "schemaName": "spec-driven",
+  "contextFiles": {
+    "proposal": "C:\\Tienda\\OpenSpec-Tienda\\openspec\\changes\\customer-auth-verification\\proposal.md",
+    "specs": "C:\\Tienda\\OpenSpec-Tienda\\openspec\\changes\\customer-auth-verification\\specs\\**\\*.md",
+    "design": "C:\\Tienda\\OpenSpec-Tienda\\openspec\\changes\\customer-auth-verification\\design.md",
+    "tasks": "C:\\Tienda\\OpenSpec-Tienda\\openspec\\changes\\customer-auth-verification\\tasks.md"
+  },
+  "progress": {
+    "total": 12,
+    "complete": 0,
+    "remaining": 12
+  },
+  "tasks": [
+    {
+      "id": "1",
+      "description": "1.1 Create a new migration to update the `profiles` table `role` constraint to include `customer`.",
+      "done": false
+    },
+    {
+      "id": "2",
+      "description": "1.2 Verify that the `handle_new_user` trigger correctly initializes profiles for new sign-ups.",
+      "done": false
+    },
+    {
+      "id": "3",
+      "description": "2.1 Implement a `RegisterForm` React component that uses `supabase.auth.signUp` to create accounts.",
+      "done": false
+    },
+    {
+      "id": "4",
+      "description": "2.2 Configure the registration logic to explicitly set the user's role to `customer` in the `profiles` table (or handle it via metadata/trigger).",
+      "done": false
+    },
+    {
+      "id": "5",
+      "description": "2.3 Add logic to display a \"Check your email for verification\" message after successful registration.",
+      "done": false
+    },
+    {
+      "id": "6",
+      "description": "2.4 Update the login component to fetch the `role` from the `profiles` table upon successful authentication.",
+      "done": false
+    },
+    {
+      "id": "7",
+      "description": "3.1 Create the `/customer` directory and an `index.astro` file as a placeholder dashboard.",
+      "done": false
+    },
+    {
+      "id": "8",
+      "description": "3.2 Implement a `RoleGuard` or equivalent logic in `/customer/index.astro` to redirect non-customer or unauthenticated users.",
+      "done": false
+    },
+    {
+      "id": "9",
+      "description": "3.3 Add redirection logic in the login flow to send users with the `customer` role to `/customer`.",
+      "done": false
+    },
+    {
+      "id": "10",
+      "description": "4.1 Verify the customer registration flow triggers an email verification (check Supabase logs).",
+      "done": false
+    },
+    {
+      "id": "11",
+      "description": "4.2 Test that unverified users cannot log in (if enforced by Supabase).",
+      "done": false
+    },
+    {
+      "id": "12",
+      "description": "4.3 Test that a verified customer is correctly redirected to the dashboard.",
+      "done": false
+    }
+  ],
+  "state": "ready",
+  "instruction": "Read context files, work through pending tasks, mark complete as you go.\nPause if you hit blockers or need clarification."
+}

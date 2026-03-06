@@ -11,9 +11,12 @@ export interface Product {
     id: string;
     name: string;
     description: string;
+    long_description?: string;
     price: number;
     inventory: number;
     image_url: string | null;
+    images?: string[];
+    category?: string;
     created_at: string;
 }
 
@@ -42,6 +45,7 @@ export interface Review {
     rating: number;
     comment: string | null;
     created_at: string;
+    userName?: string;
     user?: { email: string };
 }
 

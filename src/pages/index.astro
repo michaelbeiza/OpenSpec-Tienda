@@ -4,8 +4,6 @@ import App from '../components/App';
 import HomePage from '../components/pages/HomePage';
 ---
 <Layout title="Inicio">
-  <App client:only="react" currentPath="/">
-    <HomePage client:only="react" />
-  </App>
+  <App client:only="react" currentPath="/" />
 </Layout>
 

@@ -1,28 +1,32 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import App from '../../components/App';
-import ProductDetailPage from '../../components/pages/ProductDetailPage';
 import { createClient } from '@supabase/supabase-js';
+import { MOCK_PRODUCTS } from '../../lib/mockData';
 
-// In static mode, we need to export getStaticPaths to tell Astro which product IDs exist.
-// We fetch all product IDs from Supabase at build time.
 export async function getStaticPaths() {
   const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL,
-    import.meta.env.VITE_SUPABASE_ANON_KEY
+    import.meta.env.PUBLIC_SUPABASE_URL || 'http://localhost:54321',
+    import.meta.env.PUBLIC_SUPABASE_ANON_KEY || 'dummy'
   );
-  const { data } = await supabase.from('products').select('id');
-  // If Supabase has products at build time, generate static pages.
-  // Also add a fallback stub so build always succeeds even if DB is empty.
-  const ids: string[] = (data ?? []).map((p: { id: string }) => p.id);
-  if (ids.length === 0) ids.push('placeholder');
-  return ids.map((id) => ({ params: { id } }));
+  
+  let ids: string[] = [];
+  try {
+    const { data } = await supabase.from('products').select('id');
+    ids = (data ?? []).map((p: { id: string }) => p.id);
+  } catch (e) {
+    // Silent catch for build
+  }
+
+  const mockIds = MOCK_PRODUCTS.map(p => p.id);
+  const allIds = [...new Set([...ids, ...mockIds])];
+  if (allIds.length === 0) allIds.push('placeholder');
+  
+  return allIds.map((id) => ({ params: { id } }));
 }
 
 const { id } = Astro.params;
 ---
 <Layout title="Producto">
-  <App client:only="react" currentPath="/products">
-    <ProductDetailPage productId={id!} client:only="react" />
-  </App>
+  <App client:only="react" currentPath="/products" productId={id} />
 </Layout>

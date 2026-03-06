@@ -4,8 +4,6 @@ import App from '../../components/App';
 import CartPage from '../../components/pages/CartPage';
 ---
 <Layout title="Carrito">
-  <App client:only="react" currentPath="/cart">
-    <CartPage client:only="react" />
-  </App>
+  <App client:only="react" currentPath="/cart" />
 </Layout>
 

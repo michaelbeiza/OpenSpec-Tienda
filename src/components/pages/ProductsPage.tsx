@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabase';
 import type { Product } from '../../lib/types';
 import { useCart } from '../../context/CartContext';
+import { supabase } from '../../lib/supabase';
 
 export default function ProductsPage() {
     const [products, setProducts] = useState<Product[]>([]);
     const [filtered, setFiltered] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [search, setSearch] = useState('');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
@@ -15,10 +16,37 @@ export default function ProductsPage() {
 
     useEffect(() => {
         async function load() {
-            const { data } = await supabase.from('products').select('*').gt('inventory', 0).order('created_at', { ascending: false });
-            setProducts(data ?? []);
-            setFiltered(data ?? []);
-            setLoading(false);
+            setLoading(true);
+            setError(null);
+            console.log('Intentando conectar con Supabase...', import.meta.env.PUBLIC_SUPABASE_URL);
+            
+            try {
+                // Timeout de 7 segundos para no quedarse colgado
+                const fetchPromise = supabase
+                    .from('products')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Tiempo de espera agotado. Revisa tu conexión o las claves en .env.local')), 7000)
+                );
+
+                const { data, error: sbError }: any = await Promise.race([fetchPromise, timeoutPromise]);
+                
+                if (sbError) {
+                    console.error('Error de Supabase:', sbError);
+                    setError(`Error de base de datos: ${sbError.message}`);
+                } else {
+                    console.log('Productos cargados con éxito:', data?.length);
+                    setProducts(data ?? []);
+                    setFiltered(data ?? []);
+                }
+            } catch (err: any) {
+                console.error('Error capturado:', err);
+                setError(err.message || 'No se pudo establecer comunicación con Supabase');
+            } finally {
+                setLoading(false);
+            }
         }
         load();
     }, []);
@@ -53,9 +81,19 @@ export default function ProductsPage() {
             </div>
 
             {loading ? (
-                <div style={{ textAlign: 'center', padding: 80, color: 'var(--color-text-muted)' }}>Cargando productos...</div>
+                <div style={{ textAlign: 'center', padding: 80, color: 'var(--color-text-muted)' }}>
+                    <div className="loader" style={{ marginBottom: 16 }}></div>
+                    Cargando productos...
+                </div>
+            ) : error ? (
+                <div style={{ textAlign: 'center', padding: 80, color: 'var(--color-danger)', background: 'rgba(239, 68, 68, 0.1)', borderRadius: 'var(--radius)', border: '1px solid var(--color-danger)' }}>
+                    <div style={{ fontSize: 32, marginBottom: 16 }}>⚠️</div>
+                    <h3 style={{ marginBottom: 8 }}>No se pudieron cargar los productos</h3>
+                    <p style={{ fontSize: 14, opacity: 0.8 }}>{error}</p>
+                    <button className="btn btn-primary" style={{ marginTop: 24 }} onClick={() => window.location.reload()}>Reintentar conexión</button>
+                </div>
             ) : filtered.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: 80, color: 'var(--color-text-muted)' }}>No se encontraron productos.</div>
+                <div style={{ textAlign: 'center', padding: 80, color: 'var(--color-text-muted)' }}>No se encontraron productos en la base de datos.</div>
             ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px,1fr))', gap: 24 }}>
                     {filtered.map(p => (
@@ -84,6 +122,12 @@ export default function ProductsPage() {
             )}
 
             {toast && <div className="toast toast-success">{toast}</div>}
+            
+            {/* Connection Debug Info */}
+            <div style={{ marginTop: 60, paddingTop: 20, borderTop: '1px solid var(--color-border)', fontSize: 10, color: 'var(--color-text-muted)', textAlign: 'center', opacity: 0.5 }}>
+                <p>Identificador de Conexión: <strong>{import.meta.env.PUBLIC_SUPABASE_URL?.split('//')[1]?.split('.')[0]}</strong></p>
+                <p>Modo: Producción DB</p>
+            </div>
         </div>
     );
 }

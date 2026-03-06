@@ -4,8 +4,6 @@ import App from '../../components/App';
 import ProfilePage from '../../components/pages/ProfilePage';
 ---
 <Layout title="Mi Cuenta">
-  <App client:only="react" currentPath="/profile">
-    <ProfilePage client:only="react" />
-  </App>
+  <App client:only="react" currentPath="/profile" />
 </Layout>
 

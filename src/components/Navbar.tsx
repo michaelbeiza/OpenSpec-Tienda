@@ -7,7 +7,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ currentPath }: NavbarProps) {
-    const { user, profile, role, signOut } = useAuth();
+    const { user, profile, role, signOut, openAuthModal } = useAuth();
     const { itemCount } = useCart();
 
     return (
@@ -44,8 +44,8 @@ export default function Navbar({ currentPath }: NavbarProps) {
                     </>
                 ) : (
                     <>
-                        <a href="/login" className="btn btn-ghost btn-sm" style={{ textDecoration: 'none' }}>Entrar</a>
-                        <a href="/register" className="btn btn-primary btn-sm" style={{ textDecoration: 'none' }}>Registrarse</a>
+                        <button onClick={() => openAuthModal('login')} className="btn btn-ghost btn-sm">Entrar</button>
+                        <button onClick={() => openAuthModal('register')} className="btn btn-primary btn-sm">Registrarse</button>
                     </>
                 )}
             </div>

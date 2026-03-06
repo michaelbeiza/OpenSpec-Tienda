@@ -1,0 +1,11 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import App from '../../components/App';
+import VerifyPage from '../../components/pages/VerifyPage';
+---
+
+<Layout title="Verificación de Cuenta">
+  <App client:only="react" currentPath="/verify">
+    <VerifyPage client:only="react" />
+  </App>
+</Layout>
