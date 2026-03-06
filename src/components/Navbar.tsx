@@ -10,6 +10,7 @@ export default function Navbar({ currentPath }: NavbarProps) {
     const { user, profile, role, signOut } = useAuth();
     const { itemCount } = useCart();
     const [isBouncing, setIsBouncing] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     // Trigger bounce animation when item count changes
     useEffect(() => {
@@ -19,6 +20,14 @@ export default function Navbar({ currentPath }: NavbarProps) {
             return () => clearTimeout(timer);
         }
     }, [itemCount]);
+
+    const categoriesTree = [
+        { name: 'Novedades', icon: '✨', isNew: true },
+        { name: 'Hombre', icon: '👔', subcategories: ['Camisetas', 'Pantalones', 'Chaquetas', 'Calzado'] },
+        { name: 'Mujer', icon: '👗', subcategories: ['Vestidos', 'Tops', 'Faldas', 'Calzado'] },
+        { name: 'Deportes', icon: '🏃‍♂️', subcategories: ['Running', 'Gimnasio', 'Fútbol', 'Yoga'] },
+        { name: 'Accesorios', icon: '🎒', subcategories: ['Mochilas', 'Relojes', 'Gafas', 'Gorras'] },
+    ];
 
     return (
         <nav style={{
@@ -50,25 +59,139 @@ export default function Navbar({ currentPath }: NavbarProps) {
                     background: rgba(255,255,255,0.05);
                 }
                 .nav-link-ofertas {
-                    color: #ef4444; /* Tailwind red-500 */
+                    color: #fff;
                     font-weight: 700;
                     display: flex;
                     align-items: center;
                     gap: 6px;
+                    background: rgba(239, 68, 68, 0.15);
+                    border: 1px solid rgba(239, 68, 68, 0.4);
+                    box-shadow: 0 0 15px rgba(239, 68, 68, 0.2), inset 0 0 10px rgba(239, 68, 68, 0.1);
+                    text-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
                 }
                 .nav-link-ofertas:hover {
-                    background: rgba(239, 68, 68, 0.1);
+                    background: rgba(239, 68, 68, 0.25);
+                    border-color: rgba(239, 68, 68, 0.6);
+                    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4), inset 0 0 15px rgba(239, 68, 68, 0.2);
+                    transform: translateY(-1px);
+                }
+                .sidebar-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    background: rgba(0,0,0,0.6);
+                    backdrop-filter: blur(4px);
+                    z-index: 999;
+                    opacity: 0;
+                    pointer-events: none;
+                    transition: opacity 0.3s ease;
+                }
+                .sidebar-overlay.open {
+                    opacity: 1;
+                    pointer-events: auto;
+                }
+                .sidebar {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 320px;
+                    height: 100vh;
+                    background: rgba(18,18,26,0.95);
+                    backdrop-filter: blur(20px);
+                    border-right: 1px solid rgba(255,255,255,0.05);
+                    z-index: 1000;
+                    transform: translateX(-100%);
+                    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                    display: flex;
+                    flex-direction: column;
+                    overflow-y: auto;
+                }
+                .sidebar.open {
+                    transform: translateX(0);
+                }
+                .cat-btn {
+                    width: 100%;
+                    text-align: left;
+                    padding: 16px 24px;
+                    background: transparent;
+                    border: none;
+                    border-bottom: 1px solid rgba(255,255,255,0.05);
+                    color: var(--color-text);
+                    font-size: 16px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    transition: background 0.2s;
+                }
+                .cat-btn:hover {
+                    background: rgba(255,255,255,0.03);
+                }
+                .subcat-list {
+                    padding: 8px 24px 16px 50px;
+                    background: rgba(0,0,0,0.2);
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                }
+                .subcat-link {
+                    color: var(--color-text-muted);
+                    text-decoration: none;
+                    font-size: 14px;
+                    transition: color 0.2s;
+                }
+                .subcat-link:hover {
+                    color: var(--color-primary);
                 }
                 `}
             </style>
+
+            {/* Sidebar Overlay and Content */}
+            <div className={`sidebar-overlay ${isSidebarOpen ? 'open' : ''}`} onClick={() => setIsSidebarOpen(false)}></div>
+            <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
+                <div style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                    <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>Categorías</h2>
+                    <button onClick={() => setIsSidebarOpen(false)} style={{ background: 'transparent', border: 'none', color: 'var(--color-text-muted)', cursor: 'pointer', padding: 4 }}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div style={{ flex: 1 }}>
+                    <button className="cat-btn" style={{ color: 'var(--color-primary)', fontWeight: 700 }} onClick={() => window.location.href = '/products'}>
+                        <span>🌟</span> Todas las categorías
+                    </button>
+                    {categoriesTree.map(cat => (
+                        <div key={cat.name}>
+                            <button className="cat-btn">
+                                <span>{cat.icon}</span> {cat.name}
+                                {cat.isNew && <span style={{ marginLeft: 'auto', background: 'var(--color-accent)', fontSize: 10, padding: '2px 6px', borderRadius: 4, color: 'white' }}>NUEVO</span>}
+                            </button>
+                            {cat.subcategories && (
+                                <div className="subcat-list">
+                                    {cat.subcategories.map(sub => (
+                                        <a href={`/products?cat=${sub.toLowerCase()}`} key={sub} className="subcat-link">{sub}</a>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div>
+
             <div className="container" style={{ display: 'flex', alignItems: 'center', gap: 12, height: 64 }}>
+                <button onClick={() => setIsSidebarOpen(true)} className="nav-link" style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'white', display: 'flex', alignItems: 'center', padding: '8px' }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+
                 <a href="/" style={{ fontWeight: 800, fontSize: 20, background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginRight: 'auto' }}>
                     🛍️ Tienda
                 </a>
 
                 <div style={{ display: 'flex', gap: 4 }}>
                     <a href="/products" className="nav-link text-white text-sm font-medium">Productos</a>
-                    <a href="/products" className="nav-link nav-link-ofertas text-sm">
+                    <a href="/products" className="nav-link nav-link-ofertas text-sm" style={{ border: '1px solid rgba(239, 68, 68, 0.4)' }}>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"></path></svg>
                         Ofertas
                     </a>

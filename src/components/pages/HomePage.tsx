@@ -167,6 +167,43 @@ export default function HomePage() {
                     </div>
                 ))}
             </section>
+
+            {/* Escríbenos / Contacto */}
+            <section style={{
+                padding: '100px 24px',
+                background: 'linear-gradient(to bottom, transparent, rgba(124,107,255,0.05))',
+                borderTop: '1px solid rgba(255,255,255,0.05)'
+            }}>
+                <div className="container" style={{ maxWidth: 800 }}>
+                    <div style={{ textAlign: 'center', marginBottom: 48 }}>
+                        <div className="badge badge-primary" style={{ marginBottom: 16, background: 'rgba(124,107,255,0.1)', color: '#a78bfa', border: '1px solid rgba(124,107,255,0.2)' }}>Soporte</div>
+                        <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: 16 }}>¿Tienes alguna duda? <span style={{ color: 'var(--color-primary)' }}>Escríbenos</span></h2>
+                        <p style={{ color: 'var(--color-text-muted)', fontSize: 18 }}>Nuestro equipo te responderá en menos de 24 horas laborables.</p>
+                    </div>
+
+                    <div className="card" style={{ padding: 40, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <form onSubmit={(e) => { e.preventDefault(); alert("Mensaje enviado (Simulado)"); }} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                            <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
+                                <div style={{ flex: '1 1 200px' }}>
+                                    <label style={{ display: 'block', fontSize: 14, fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: 8 }}>Nombre</label>
+                                    <input type="text" placeholder="Ej. Ana Pérez" required style={{ width: '100%', padding: '14px 16px', borderRadius: 'var(--radius)', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', outline: 'none' }} />
+                                </div>
+                                <div style={{ flex: '1 1 200px' }}>
+                                    <label style={{ display: 'block', fontSize: 14, fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: 8 }}>Email</label>
+                                    <input type="email" placeholder="tu@correo.com" required style={{ width: '100%', padding: '14px 16px', borderRadius: 'var(--radius)', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', outline: 'none' }} />
+                                </div>
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', fontSize: 14, fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: 8 }}>Mensaje</label>
+                                <textarea rows={5} placeholder="¿En qué te podemos ayudar?" required style={{ width: '100%', padding: '14px 16px', borderRadius: 'var(--radius)', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', outline: 'none', resize: 'vertical' }}></textarea>
+                            </div>
+                            <button type="submit" className="btn btn-primary" style={{ padding: '16px', fontSize: 16, fontWeight: 700, borderRadius: 'var(--radius)', background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))', border: 'none', color: 'white', cursor: 'pointer', transition: 'filter 0.3s' }} onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.2)'} onMouseOut={e => e.currentTarget.style.filter = 'brightness(1)'}>
+                                Enviar mensaje
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
         </div>
     );
 }
