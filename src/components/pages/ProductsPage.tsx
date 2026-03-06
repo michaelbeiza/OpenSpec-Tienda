@@ -3,10 +3,13 @@ import type { Product } from '../../lib/types';
 import { useCart } from '../../context/CartContext';
 import { supabase } from '../../lib/supabase';
 
+import { ProductGridSkeleton } from '../Skeleton';
+
 export default function ProductsPage() {
     const [products, setProducts] = useState<Product[]>([]);
     const [filtered, setFiltered] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
+    const [showWakeUp, setShowWakeUp] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [search, setSearch] = useState('');
     const [minPrice, setMinPrice] = useState('');
@@ -15,40 +18,33 @@ export default function ProductsPage() {
     const [toast, setToast] = useState('');
 
     useEffect(() => {
+        let wakeUpTimer = setTimeout(() => {
+            if (loading) setShowWakeUp(true);
+        }, 3000);
+
         async function load() {
             setLoading(true);
             setError(null);
-            console.log('Intentando conectar con Supabase...', import.meta.env.PUBLIC_SUPABASE_URL);
             
             try {
-                // Timeout de 7 segundos para no quedarse colgado
-                const fetchPromise = supabase
+                const { data, error: sbError }: any = await supabase
                     .from('products')
                     .select('*')
                     .order('created_at', { ascending: false });
-
-                const timeoutPromise = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Tiempo de espera agotado. Revisa tu conexión o las claves en .env.local')), 7000)
-                );
-
-                const { data, error: sbError }: any = await Promise.race([fetchPromise, timeoutPromise]);
                 
-                if (sbError) {
-                    console.error('Error de Supabase:', sbError);
-                    setError(`Error de base de datos: ${sbError.message}`);
-                } else {
-                    console.log('Productos cargados con éxito:', data?.length);
-                    setProducts(data ?? []);
-                    setFiltered(data ?? []);
-                }
+                if (sbError) throw sbError;
+                setProducts(data ?? []);
+                setFiltered(data ?? []);
             } catch (err: any) {
-                console.error('Error capturado:', err);
-                setError(err.message || 'No se pudo establecer comunicación con Supabase');
+                setError(err.message || 'No se pudo cargar la base de datos');
             } finally {
                 setLoading(false);
+                setShowWakeUp(false);
+                clearTimeout(wakeUpTimer);
             }
         }
         load();
+        return () => clearTimeout(wakeUpTimer);
     }, []);
 
     useEffect(() => {
@@ -81,9 +77,13 @@ export default function ProductsPage() {
             </div>
 
             {loading ? (
-                <div style={{ textAlign: 'center', padding: 80, color: 'var(--color-text-muted)' }}>
-                    <div className="loader" style={{ marginBottom: 16 }}></div>
-                    Cargando productos...
+                <div>
+                    {showWakeUp && (
+                        <div style={{ textAlign: 'center', marginBottom: 24, padding: '12px', background: 'rgba(124,107,255,0.1)', borderRadius: 8, color: 'var(--color-primary)', fontSize: 13, animation: 'slideIn 0.3s ease' }}>
+                            🚀 La base de datos está despertando... un momento por favor.
+                        </div>
+                    )}
+                    <ProductGridSkeleton count={8} />
                 </div>
             ) : error ? (
                 <div style={{ textAlign: 'center', padding: 80, color: 'var(--color-danger)', background: 'rgba(239, 68, 68, 0.1)', borderRadius: 'var(--radius)', border: '1px solid var(--color-danger)' }}>

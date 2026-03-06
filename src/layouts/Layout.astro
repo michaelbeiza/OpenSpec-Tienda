@@ -160,4 +160,42 @@ const { title = 'Tienda Online', description = 'Tu tienda favorita' } = Astro.pr
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: var(--color-bg); }
   ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+
+  /* Loader */
+  .loader {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--color-border);
+    border-bottom-color: var(--color-primary);
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+  }
+
+  @keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(0.95); opacity: 0.5; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(0.95); opacity: 0.5; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideInDown {
+    from { opacity: 0; transform: translate(-50%, -100%); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
 </style>

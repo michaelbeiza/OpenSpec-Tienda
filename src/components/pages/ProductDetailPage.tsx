@@ -22,29 +22,35 @@ export default function ProductDetailPage({ productId }: Props) {
     const { addItem } = useCart();
     const { user } = useAuth();
 
+    const [error, setError] = useState<string | null>(null);
+
     useEffect(() => {
         async function load() {
             setLoading(true);
+            setError(null);
+            
             try {
                 // Fetch product from Supabase
-                const { data: prod } = await supabase.from('products').select('*').eq('id', productId).single();
+                const { data: prod, error: prodError } = await supabase.from('products').select('*').eq('id', productId).single();
                 
+                if (prodError) throw prodError;
+
                 if (prod) {
                     setProduct(prod);
                     
-                    // Load reviews from Supabase
+                    // Load reviews and related sequentially
                     const { data: revs } = await supabase
                         .from('reviews')
-                        .select('*, profile:profiles(email)')
+                        .select('*, profiles(email)')
                         .eq('product_id', productId)
                         .order('created_at', { ascending: false });
                     
                     setReviews(revs?.map(r => ({
                         ...r,
-                        userName: (r as any).profile?.email?.split('@')[0] || 'Usuario'
+                        userName: (r as any).profiles?.email?.split('@')[0] || 'Usuario'
                     })) ?? []);
 
-                    // Load Related Products from Supabase
+                    // Load Related Products
                     const { data: related } = await supabase
                         .from('products')
                         .select('*')
@@ -54,8 +60,9 @@ export default function ProductDetailPage({ productId }: Props) {
                     
                     setRelatedProducts(related ?? []);
                 }
-            } catch (err) {
+            } catch (err: any) {
                 console.error('Error loading product details:', err);
+                setError(err.message || 'Error cargando los detalles del producto');
             } finally {
                 setLoading(false);
             }
@@ -84,14 +91,14 @@ export default function ProductDetailPage({ productId }: Props) {
                     rating, 
                     comment 
                 })
-                .select('*, profile:profiles(email)')
+                .select('*, profiles(email)')
                 .single();
             
             if (error) throw error;
             if (data) {
                 const newRev: Review = {
                     ...data,
-                    userName: (data as any).profile?.email?.split('@')[0] || 'Tú'
+                    userName: (data as any).profiles?.email?.split('@')[0] || 'Tú'
                 };
                 setReviews(prev => [newRev, ...prev]);
                 setComment('');
@@ -105,12 +112,38 @@ export default function ProductDetailPage({ productId }: Props) {
         }
     };
 
+    const [showWakeUp, setShowWakeUp] = useState(false);
+
+    useEffect(() => {
+        let timer = setTimeout(() => {
+            if (loading) setShowWakeUp(true);
+        }, 3000);
+        return () => clearTimeout(timer);
+    }, [loading]);
+
     if (loading) return (
-        <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)' }}>
-            <div className="loader">Cargando experiencia premium...</div>
+        <div style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)', gap: 24 }}>
+            <div className="loader"></div>
+            <div style={{ textAlign: 'center' }}>
+                <p style={{ fontWeight: 600, color: 'var(--color-text)', marginBottom: 8 }}>Cargando experiencia premium...</p>
+                {showWakeUp && (
+                    <p style={{ fontSize: 13, color: 'var(--color-primary)', animation: 'slideIn 0.3s ease' }}>
+                        🚀 El servidor de Supabase está despertando... un momento por favor.
+                    </p>
+                )}
+            </div>
         </div>
     );
     
+    if (error) return (
+        <div style={{ textAlign: 'center', padding: 80, color: 'var(--color-danger)', background: 'rgba(239, 68, 68, 0.1)', borderRadius: 'var(--radius)', border: '1px solid var(--color-danger)', maxWidth: 600, margin: '80px auto' }}>
+            <div style={{ fontSize: 32, marginBottom: 16 }}>⚠️</div>
+            <h3 style={{ marginBottom: 8 }}>No se pudieron cargar los detalles</h3>
+            <p style={{ fontSize: 14, opacity: 0.8 }}>{error}</p>
+            <button className="btn btn-primary" style={{ marginTop: 24 }} onClick={() => window.location.reload()}>Reintentar conexión</button>
+        </div>
+    );
+
     if (!product) return (
         <div style={{ textAlign: 'center', padding: 80 }}>
             <h2 style={{ marginBottom: 16 }}>Producto no encontrado en la base de datos</h2>

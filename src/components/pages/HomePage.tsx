@@ -4,16 +4,24 @@ import { supabase } from '../../lib/supabase';
 import type { Product } from '../../lib/types';
 import { useCart } from '../../context/CartContext';
 
+import { ProductGridSkeleton } from '../Skeleton';
+
 export default function HomePage() {
     const { user, openAuthModal } = useAuth();
     const { addItem } = useCart();
     const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(false);
+    const [showWakeUp, setShowWakeUp] = useState(false);
     const [toast, setToast] = useState('');
 
     useEffect(() => {
+        let timer: any;
         if (user) {
             setLoading(true);
+            timer = setTimeout(() => {
+                if (loading) setShowWakeUp(true);
+            }, 3000);
+
             const fetchProducts = async () => {
                 try {
                     const { data, error } = await supabase
@@ -29,10 +37,13 @@ export default function HomePage() {
                     console.error(e);
                 } finally {
                     setLoading(false);
+                    setShowWakeUp(false);
+                    clearTimeout(timer);
                 }
             };
             fetchProducts();
         }
+        return () => clearTimeout(timer);
     }, [user]);
 
     const handleAdd = (p: Product) => {
@@ -94,7 +105,14 @@ export default function HomePage() {
                     </div>
 
                     {loading ? (
-                        <div style={{ textAlign: 'center', padding: 40, color: 'var(--color-text-muted)' }}>Cargando sugerencias...</div>
+                        <div>
+                            {showWakeUp && (
+                                <div style={{ textAlign: 'center', marginBottom: 24, padding: '12px', background: 'rgba(124,107,255,0.1)', borderRadius: 8, color: 'var(--color-primary)', fontSize: 13, animation: 'slideIn 0.3s ease' }}>
+                                    🚀 El servidor está despertando... un momento por favor.
+                                </div>
+                            )}
+                            <ProductGridSkeleton count={4} />
+                        </div>
                     ) : featuredProducts.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: 40, color: 'var(--color-text-muted)', border: '1px dashed var(--color-border)', borderRadius: 'var(--radius)' }}>
                             Aún no hay productos en la base de datos.

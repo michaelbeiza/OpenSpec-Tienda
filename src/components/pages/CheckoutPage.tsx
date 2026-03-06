@@ -18,6 +18,10 @@ export default function CheckoutPage() {
     const [expiry, setExpiry] = useState('');
     const [cvv, setCvv] = useState('');
 
+    const [processingPayment, setProcessingPayment] = useState(false);
+    const [processingMessage, setProcessingMessage] = useState('');
+    const [showSuccessToast, setShowSuccessToast] = useState(false);
+
     if (!user) {
         return (
             <div className="container" style={{ padding: '80px 24px', textAlign: 'center' }}>
@@ -37,10 +41,27 @@ export default function CheckoutPage() {
     }
 
     const handlePlaceOrder = async () => {
+        if (!cardNumber || !expiry || !cvv) {
+            setError('Por favor rellena todos los campos de la tarjeta.');
+            return;
+        }
+        
         setLoading(true);
+        setProcessingPayment(true);
         setError('');
+        
         try {
-            // Create order
+            // Simulated Payment steps
+            setProcessingMessage('🔒 Cifrando datos de pago...');
+            await new Promise(r => setTimeout(r, 1000));
+            
+            setProcessingMessage('🏦 Contactando con su entidad bancaria...');
+            await new Promise(r => setTimeout(r, 1200));
+
+            setProcessingMessage('✅ Pago autorizado por el banco.');
+            await new Promise(r => setTimeout(r, 800));
+
+            // Actually Create order in Supabase
             const { data: order, error: orderErr } = await supabase.from('orders').insert({
                 user_id: user.id,
                 status: 'paid',
@@ -61,39 +82,90 @@ export default function CheckoutPage() {
 
             // Decrease inventory
             for (const i of items) {
-                await supabase.from('products').update({ inventory: i.product.inventory - i.quantity }).eq('id', i.product.id);
+                await supabase.from('products').update({ inventory: (i.product.inventory || 10) - i.quantity }).eq('id', i.product.id);
             }
 
             setOrderId(order.id);
+            setShowSuccessToast(true);
             clearCart();
             setStep('done');
+
+            // Wait 2 seconds with the toast and sound-like visual, then redirect
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2500);
+
         } catch (e: any) {
             setError(e.message ?? 'Error al procesar el pedido.');
+            setProcessingPayment(false);
         }
         setLoading(false);
+        setProcessingPayment(false);
     };
 
     if (step === 'done') return (
-        <div className="container" style={{ padding: '80px 24px', textAlign: 'center' }}>
+        <div className="container" style={{ padding: '80px 24px', textAlign: 'center', animation: 'fadeIn 0.5s ease-out' }}>
+            {showSuccessToast && (
+                <div style={{
+                    position: 'fixed',
+                    top: '20px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'var(--color-success)',
+                    color: '#000',
+                    padding: '16px 32px',
+                    borderRadius: '50px',
+                    fontWeight: 800,
+                    fontSize: '18px',
+                    boxShadow: '0 10px 40px rgba(74, 222, 128, 0.4)',
+                    zIndex: 20000,
+                    animation: 'slideInDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                }}>
+                    ✅ ¡Pago hecho! Redirigiendo...
+                </div>
+            )}
             <div style={{ fontSize: 72, marginBottom: 16 }}>🎉</div>
-            <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>¡Pedido confirmado!</h1>
-            <p style={{ color: 'var(--color-text-muted)', marginBottom: 8 }}>Tu pedido <strong style={{ color: 'var(--color-primary)' }}>#{orderId.slice(0, 8)}</strong> ha sido procesado correctamente.</p>
-            <p style={{ color: 'var(--color-text-muted)', marginBottom: 32 }}>Recibirás un email con los detalles del envío.</p>
-            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-                <a href="/profile" className="btn btn-primary">Ver mis pedidos</a>
-                <a href="/products" className="btn btn-ghost">Seguir comprando</a>
-            </div>
+            <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>¡Pedido realizado con éxito!</h1>
+            <p style={{ color: 'var(--color-text-muted)', marginBottom: 8 }}>Tu pedido <strong style={{ color: 'var(--color-primary)' }}>#{orderId.slice(0, 8)}</strong> se ha registrado correctamente.</p>
+            <p style={{ color: 'var(--color-text-muted)', marginBottom: 32 }}>Volviendo a la página principal...</p>
         </div>
     );
 
     return (
         <div className="container" style={{ padding: '40px 24px' }}>
+            {/* Payment Processing Overlay */}
+            {processingPayment && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0,0,0,0.8)',
+                    backdropFilter: 'blur(8px)',
+                    zIndex: 10000,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#fff',
+                    textAlign: 'center'
+                }}>
+                    <div className="loader" style={{ width: 80, height: 80, borderWidth: 4, marginBottom: 24 }}></div>
+                    <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 12 }}>Procesando su pago</h2>
+                    <p style={{ fontSize: 18, color: 'var(--color-primary)', fontWeight: 600, animation: 'pulse 2s infinite' }}>
+                        {processingMessage}
+                    </p>
+                    <p style={{ fontSize: 13, marginTop: 40, opacity: 0.5 }}>No cierres esta ventana ni refresques la página</p>
+                </div>
+            )}
+
             <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 32 }}>Checkout</h1>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 40, alignItems: 'start' }}>
                 <div>
                     {step === 'address' && (
-                        <div className="card" style={{ padding: 32 }}>
+                        <div className="card" style={{ padding: 32, animation: 'fadeIn 0.3s ease-out' }}>
                             <h2 style={{ fontWeight: 700, marginBottom: 24, fontSize: 18 }}>Dirección de envío</h2>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                                 {([['name', 'Nombre completo', 'text'], ['address', 'Dirección', 'text'], ['city', 'Ciudad', 'text'], ['postal_code', 'Código postal', 'text'], ['country', 'País', 'text']] as [keyof ShippingAddress, string, string][]).map(([field, label, type]) => (
@@ -114,7 +186,7 @@ export default function CheckoutPage() {
                     )}
 
                     {step === 'payment' && (
-                        <div className="card" style={{ padding: 32 }}>
+                        <div className="card" style={{ padding: 32, animation: 'fadeIn 0.3s ease-out' }}>
                             <button className="btn btn-ghost btn-sm" onClick={() => setStep('address')} style={{ marginBottom: 20 }}>← Volver</button>
                             <h2 style={{ fontWeight: 700, marginBottom: 24, fontSize: 18 }}>Datos de pago</h2>
                             <div style={{ background: 'rgba(124,107,255,0.08)', border: '1px solid var(--color-primary)', borderRadius: 'var(--radius-sm)', padding: '10px 14px', fontSize: 13, marginBottom: 20, color: 'var(--color-primary)' }}>

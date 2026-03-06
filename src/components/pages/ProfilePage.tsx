@@ -121,11 +121,27 @@ export default function ProfilePage() {
                                                 <p style={{ fontSize: 14 }}>{order.shipping_address.name}, {order.shipping_address.address}, {order.shipping_address.city} {order.shipping_address.postal_code}, {order.shipping_address.country}</p>
                                             </div>
                                             {orderItems[order.id] ? (
-                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                                                     {orderItems[order.id].map(item => (
-                                                        <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: 'var(--color-text-muted)' }}>
-                                                            <span>{(item as any).product?.name ?? 'Producto'} × {item.quantity}</span>
-                                                            <span>€{(item.price_at_purchase * item.quantity).toFixed(2)}</span>
+                                                        <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: 16, background: 'var(--color-surface2)', padding: '10px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}>
+                                                            <div style={{ width: 44, height: 44, borderRadius: 6, overflow: 'hidden', background: 'var(--color-bg)', border: '1px solid var(--color-border)', flexShrink: 0 }}>
+                                                                {(item as any).product?.image_url ? (
+                                                                    <img 
+                                                                        src={(item as any).product.image_url} 
+                                                                        alt={(item as any).product.name} 
+                                                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                                                                    />
+                                                                ) : (
+                                                                    <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>📦</div>
+                                                                )}
+                                                            </div>
+                                                            <div style={{ flex: 1 }}>
+                                                                <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text)' }}>{(item as any).product?.name ?? 'Producto'}</p>
+                                                                <p style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>Cantidad: {item.quantity}</p>
+                                                            </div>
+                                                            <div style={{ textAlign: 'right' }}>
+                                                                <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-primary)' }}>€{(item.price_at_purchase * item.quantity).toFixed(2)}</p>
+                                                            </div>
                                                         </div>
                                                     ))}
                                                 </div>

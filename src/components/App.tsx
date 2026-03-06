@@ -9,6 +9,7 @@ import CartPage from './pages/CartPage';
 import ProductsPage from './pages/ProductsPage';
 import ProfilePage from './pages/ProfilePage';
 import VerifyPage from './pages/VerifyPage';
+import CheckoutPage from './pages/CheckoutPage';
 
 interface AppProps {
     children?: ReactNode;
@@ -32,6 +33,8 @@ export default function App({ children, currentPath = '/', productId }: AppProps
                         <ProfilePage />
                     ) : currentPath === '/verify' ? (
                         <VerifyPage />
+                    ) : (currentPath === '/checkout' || currentPath === '/checkout/') ? (
+                        <CheckoutPage />
                     ) : currentPath === '/' ? (
                         <HomePage />
                     ) : (

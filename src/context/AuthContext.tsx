@@ -11,6 +11,7 @@ interface AuthContextType {
     loading: boolean;
     signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
     signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
+    signInWithGoogle: () => Promise<void>;
     signOut: () => Promise<void>;
     isAuthModalOpen: boolean;
     authModalView: 'login' | 'register';
@@ -26,6 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [session, setSession] = useState<Session | null>(null);
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
+    const [profileLoading, setProfileLoading] = useState(false);
 
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [authModalView, setAuthModalView] = useState<'login' | 'register'>('login');
@@ -41,10 +43,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
             setUser(session?.user ?? null);
+            setLoading(false); // Liberamos el bloqueo inicial de la app
+            
             if (session?.user) {
-                fetchProfile(session.user.id);
-            } else {
-                setLoading(false);
+                fetchProfile(session.user.id, session.user.email);
             }
         });
 
@@ -53,17 +55,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setSession(session);
             setUser(session?.user ?? null);
             if (session?.user) {
-                await fetchProfile(session.user.id);
+                await fetchProfile(session.user.id, session.user.email);
             } else {
                 setProfile(null);
-                setLoading(false);
+                setProfileLoading(false);
             }
         });
 
         return () => subscription.unsubscribe();
     }, []);
 
-    const fetchProfile = async (userId: string) => {
+    const fetchProfile = async (userId: string, email?: string) => {
+        setProfileLoading(true);
         try {
             const { data, error } = await supabase
                 .from('profiles')
@@ -75,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 if (error.code === 'PGRST116') {
                     const { data: newData, error: createError } = await supabase
                         .from('profiles')
-                        .insert([{ id: userId, email: user?.email, role: 'user' }])
+                        .insert([{ id: userId, email: email || '', role: 'user' }])
                         .select()
                         .single();
                     if (!createError) setProfile(newData);
@@ -84,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 setProfile(data);
             }
         } finally {
-            setLoading(false);
+            setProfileLoading(false);
         }
     };
 
@@ -110,6 +113,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { error };
     };
 
+    const signInWithGoogle = async () => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: window.location.origin
+            }
+        });
+        if (error) console.error('Error con Google Auth:', error.message);
+    };
+
     const signOut = async () => {
         await supabase.auth.signOut();
         setUser(null);
@@ -122,7 +135,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return (
         <AuthContext.Provider value={{ 
             user, session, profile, role: profile?.role ?? null, loading, 
-            signIn, signUp, signOut,
+            signIn, signUp, signInWithGoogle, signOut,
             isAuthModalOpen, authModalView, openAuthModal, closeAuthModal, setAuthModalView
         }}>
             {children}
