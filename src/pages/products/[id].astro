@@ -1,33 +1,27 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import App from '../../components/App';
-import ProductDetailPage from '../../components/pages/ProductDetailPage';
+import ProductsWrapper from '../../components/wrappers/ProductsWrapper';
 import { createClient } from '@supabase/supabase-js';
 
 export async function getStaticPaths() {
-  // At build time in Node.js, Vite's import.meta.env injections are not available.
-  // Read env vars from process.env instead, which works in the Node.js build context.
-  const url = (import.meta.env.PUBLIC_SUPABASE_URL as string) || process.env.PUBLIC_SUPABASE_URL || '';
-  const key = (import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string) || process.env.PUBLIC_SUPABASE_ANON_KEY || '';
+  const url = import.meta.env.PUBLIC_SUPABASE_URL || process.env.PUBLIC_SUPABASE_URL || '';
+  const key = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || process.env.PUBLIC_SUPABASE_ANON_KEY || '';
 
   if (!url || !key) {
-    // No Supabase credentials at build time — return a single placeholder path.
     return [{ params: { id: 'placeholder' } }];
   }
 
   const supabase = createClient(url, key);
   const { data } = await supabase.from('products').select('id');
-  const ids: string[] = (data ?? []).map((p: { id: string }) => p.id);
+  
+  const ids: string[] = (data ?? []).map((p: any) => p.id);
   if (ids.length === 0) ids.push('placeholder');
+  
   return ids.map((id) => ({ params: { id } }));
 }
 
-export const prerender = true;
-
 const { id } = Astro.params;
 ---
-<Layout title="Producto">
-  <App client:only="react" currentPath="/products">
-    <ProductDetailPage productId={id!} client:only="react" />
-  </App>
+<Layout title={`Producto - Tienda Online`}>
+  <ProductsWrapper client:only="react" currentPath={`/products/${id}`} productId={id} />
 </Layout>

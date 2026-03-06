@@ -1,11 +1,17 @@
 import React from 'react';
 import App from '../App';
 import ProductsPage from '../pages/ProductsPage';
+import ProductDetailPage from '../pages/ProductDetailPage';
 
-export default function ProductsWrapper() {
+interface ProductsWrapperProps {
+    currentPath?: string;
+    productId?: string;
+}
+
+export default function ProductsWrapper({ currentPath = "/products", productId }: ProductsWrapperProps) {
     return (
-        <App currentPath="/products">
-            <ProductsPage />
+        <App currentPath={currentPath}>
+            {productId ? <ProductDetailPage productId={productId} /> : <ProductsPage />}
         </App>
     );
 }
