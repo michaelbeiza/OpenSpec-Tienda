@@ -49,4 +49,11 @@
 - [ ] 7.3 Test admin dashboard access control (non-admin redirect)
 - [ ] 7.4 Test full product CRUD cycle
 - [ ] 7.5 Test user listing, search, role change, order modal
-- [ ] 7.6 Verify delete button is hidden on own admin row
+## 8. Category Pages & Routing
+
+- [ ] 8.1 Add `category` column to `products` table in Supabase (Migration)
+- [ ] 8.2 Update `Product` interface in `src/lib/types.ts` to include `category`
+- [ ] 8.3 Create `src/pages/categories/[category].astro` for dynamic category routing
+- [ ] 8.4 Create `src/components/pages/CategoryPage.tsx` React component
+- [ ] 8.5 Update `src/components/Navbar.tsx` to use the new route format `/categories/:name`
+- [ ] 8.6 Update `src/components/admin/ProductForm.tsx` to include Category selection
