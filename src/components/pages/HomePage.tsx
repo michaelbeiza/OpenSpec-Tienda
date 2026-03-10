@@ -1,6 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { supabase } from '../../lib/supabase';
+import type { Product } from '../../lib/types';
+import { useCart } from '../../context/CartContext';
 
 export default function HomePage() {
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
+    const { addItem } = useCart();
+    const [toast, setToast] = useState('');
+
+    useEffect(() => {
+        async function load() {
+            const { data } = await supabase
+                .from('products')
+                .select('*')
+                .gt('inventory', 0)
+                .order('created_at', { ascending: false })
+                .limit(4);
+            setProducts(data ?? []);
+            setLoading(false);
+        }
+        load();
+    }, []);
+
+    const handleAdd = (p: Product) => {
+        addItem(p);
+        setToast(`"${p.name}" añadido al carrito`);
+        setTimeout(() => setToast(''), 2500);
+    };
+
     return (
         <div style={{ overflowX: 'hidden' }}>
             <style>
@@ -125,30 +153,128 @@ export default function HomePage() {
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px,1fr))', gap: 24 }}>
-                    {[
-                        { id: 1, name: 'AirMax 2024 Pro', price: 159.99, tag: 'NUEVO', img: '👟', color: 'bg-gradient-to-br from-blue-900/40 to-purple-900/20' },
-                        { id: 2, name: 'TechWear Jacket', price: 210.00, tag: 'TENDENCIA', img: '🧥', color: 'bg-gradient-to-br from-emerald-900/40 to-teal-900/20' },
-                        { id: 3, name: 'Urban Backpack 45L', price: 85.50, tag: 'TOP VENTAS', img: '🎒', color: 'bg-gradient-to-br from-orange-900/40 to-red-900/20' },
-                        { id: 4, name: 'Smartwatch SE2', price: 299.00, tag: 'HOT', img: '⌚', color: 'bg-gradient-to-br from-slate-800/60 to-slate-900/40' },
-                    ].map(p => (
-                        <div key={p.id} className="card product-card-hover" style={{ padding: 0, overflow: 'hidden', border: '1px solid var(--color-border)', background: 'var(--color-surface)' }}>
-                            <div className={p.color} style={{ position: 'relative', height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '6rem', background: 'var(--color-glass)' }}>
-                                <div style={{ position: 'absolute', top: 12, left: 12, background: 'var(--color-primary)', color: 'white', padding: '4px 10px', borderRadius: 20, fontSize: 10, fontWeight: 800, letterSpacing: 1 }}>
-                                    {p.tag}
-                                </div>
-                                <span style={{ filter: 'drop-shadow(0 10px 15px rgba(0,0,0,0.3))' }}>{p.img}</span>
-                            </div>
-                            <div style={{ padding: 24 }}>
-                                <h3 style={{ fontWeight: 700, fontSize: 18, marginBottom: 8 }}>{p.name}</h3>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: 20, fontWeight: 800, color: 'var(--color-text)' }}>€{p.price.toFixed(2)}</span>
-                                    <button className="btn btn-ghost" style={{ padding: '8px', borderRadius: '50%', background: 'var(--color-glass)' }}>
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    {loading ? (
+                        [1, 2, 3, 4].map(i => (
+                            <div key={i} className="card" style={{ height: 400, background: 'var(--color-surface)', border: '1px solid var(--color-border)', animation: 'pulse 1.5s infinite' }}></div>
+                        ))
+                    ) : (
+                        products.map(p => (
+                            <div key={p.id} className="card product-card-hover" style={{
+                                padding: 0,
+                                overflow: 'hidden',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                transition: 'transform 0.3s, box-shadow 0.3s',
+                                border: '1px solid var(--color-border)',
+                                background: 'var(--color-surface)',
+                            }}
+                                onMouseOver={e => {
+                                    e.currentTarget.style.transform = 'translateY(-8px)';
+                                    e.currentTarget.style.boxShadow = '0 20px 40px -10px rgba(124,107,255,0.2)';
+                                    e.currentTarget.style.border = '1px solid var(--color-primary)';
+                                }}
+                                onMouseOut={e => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.boxShadow = 'none';
+                                    e.currentTarget.style.border = '1px solid var(--color-border)';
+                                }}>
+                                <a href={`/products/${p.id}`} style={{ display: 'block', position: 'relative', background: 'rgba(0,0,0,0.5)' }}>
+                                    {p.image_url ? (
+                                        <img src={p.image_url} alt={p.name} style={{ width: '100%', height: 260, objectFit: 'cover', transition: 'transform 0.5s' }}
+                                            onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                                            onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                                        />
+                                    ) : (
+                                        <div style={{ width: '100%', height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '6rem', background: 'var(--color-glass)' }}>
+                                            🛍️
+                                        </div>
+                                    )}
+                                    {p.inventory <= 5 && p.inventory > 0 && (
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: 12,
+                                            right: 12,
+                                            background: '#ef4444',
+                                            color: 'white',
+                                            padding: '4px 10px',
+                                            borderRadius: 20,
+                                            fontSize: 12,
+                                            fontWeight: 800,
+                                            letterSpacing: 1,
+                                            boxShadow: '0 4px 12px rgba(239, 68, 68, 0.4)'
+                                        }}>
+                                            ¡Quedan {p.inventory}!
+                                        </div>
+                                    )}
+                                </a>
+                                <div style={{ padding: 24, display: 'flex', flexDirection: 'column', flex: 1 }}>
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                                            <a href={`/products/${p.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                <h3 style={{ fontWeight: 700, fontSize: 18, lineHeight: 1.3 }}>{p.name}</h3>
+                                            </a>
+                                            <span style={{ fontSize: 20, fontWeight: 800, color: 'var(--color-primary)' }}>
+                                                €{p.price.toFixed(2)}
+                                            </span>
+                                        </div>
+                                        <div style={{ marginBottom: 12 }}>
+                                            <span style={{
+                                                fontSize: 11,
+                                                fontWeight: 700,
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.5px',
+                                                padding: '4px 8px',
+                                                background: 'var(--color-glass)',
+                                                borderRadius: 4,
+                                                color: 'var(--color-text-muted)',
+                                                border: '1px solid var(--color-glass-border)'
+                                            }}>
+                                                {p.category}
+                                            </span>
+                                        </div>
+                                        <p style={{
+                                            color: 'var(--color-text-muted)',
+                                            fontSize: 14,
+                                            lineHeight: 1.5,
+                                            display: '-webkit-box',
+                                            WebkitLineClamp: 2,
+                                            WebkitBoxOrient: 'vertical',
+                                            overflow: 'hidden',
+                                            marginBottom: 24
+                                        }}>
+                                            {p.description}
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={() => handleAdd(p)}
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            background: 'var(--color-primary)',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: 'var(--radius)',
+                                            fontWeight: 600,
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s',
+                                            boxShadow: '0 4px 15px rgba(124,107,255,0.3)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: 8
+                                        }}
+                                        onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1)'}
+                                        onMouseOut={e => e.currentTarget.style.filter = 'brightness(1)'}
+                                    >
+                                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                        </svg>
+                                        Añadir al carrito
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </div>
             </section>
 
@@ -204,6 +330,34 @@ export default function HomePage() {
                     </div>
                 </div>
             </section>
+            {/* Toast */}
+            {toast && (
+                <div style={{
+                    position: 'fixed',
+                    bottom: 32,
+                    right: 32,
+                    background: 'rgba(34, 197, 94, 0.9)',
+                    backdropFilter: 'blur(8px)',
+                    color: 'white',
+                    padding: '16px 24px',
+                    borderRadius: 'var(--radius)',
+                    boxShadow: '0 10px 30px rgba(34, 197, 94, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    zIndex: 100,
+                    animation: 'slideUp 0.3s ease-out'
+                }}>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span style={{ fontWeight: 500 }}>{toast}</span>
+                    <style>{`
+                        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+                        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+                    `}</style>
+                </div>
+            )}
         </div>
     );
 }
