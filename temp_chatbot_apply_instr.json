@@ -1,0 +1,155 @@
+﻿{
+  "changeName": "ai-chatbot-product-search",
+  "changeDir": "C:\\tiendamishe\\openspec\\changes\\ai-chatbot-product-search",
+  "schemaName": "spec-driven",
+  "contextFiles": {
+    "proposal": "C:\\tiendamishe\\openspec\\changes\\ai-chatbot-product-search\\proposal.md",
+    "specs": "C:\\tiendamishe\\openspec\\changes\\ai-chatbot-product-search\\specs\\**\\*.md",
+    "design": "C:\\tiendamishe\\openspec\\changes\\ai-chatbot-product-search\\design.md",
+    "tasks": "C:\\tiendamishe\\openspec\\changes\\ai-chatbot-product-search\\tasks.md"
+  },
+  "progress": {
+    "total": 27,
+    "complete": 0,
+    "remaining": 27
+  },
+  "tasks": [
+    {
+      "id": "1",
+      "description": "1.1 Crear `src/lib/gemini-chat.ts` con la funci├│n `extractSearchTerms(message: string): Promise<{ reply: string, searchTerms: string[] }>` que llama a `gemini-2.0-flash` con el system prompt definido en design.md",
+      "done": false
+    },
+    {
+      "id": "2",
+      "description": "1.2 Crear `src/lib/gemini-chat.ts` funci├│n `searchProductsByTerms(terms: string[]): Promise<Product[]>` que realiza la query `ilike` en Supabase sobre `name` y `description` con l├¡mite de 3 resultados",
+      "done": false
+    },
+    {
+      "id": "3",
+      "description": "1.3 Verificar que `GEMINI_API_KEY` est├í en `.env.local` (si usa nombre diferente al existente, actualizar la clave)",
+      "done": false
+    },
+    {
+      "id": "4",
+      "description": "2.1 Crear `src/pages/api/ai-chat.ts` como Astro API Route que acepta `POST` con body `{ message: string }`",
+      "done": false
+    },
+    {
+      "id": "5",
+      "description": "2.2 A├▒adir validaci├│n: devolver `400` si `message` est├í vac├¡o o falta",
+      "done": false
+    },
+    {
+      "id": "6",
+      "description": "2.3 A├▒adir verificaci├│n de sesi├│n: devolver `401` si el usuario no est├í autenticado (usando Supabase server client)",
+      "done": false
+    },
+    {
+      "id": "7",
+      "description": "2.4 Integrar `extractSearchTerms` y `searchProductsByTerms` en el endpoint y devolver `{ reply, products }` con `200 OK`",
+      "done": false
+    },
+    {
+      "id": "8",
+      "description": "2.5 A├▒adir manejo de errores: capturar excepciones de Gemini y devolver `500` con mensaje amigable",
+      "done": false
+    },
+    {
+      "id": "9",
+      "description": "3.1 Crear `src/components/ChatBot.tsx` con estado local: `isOpen`, `messages`, `inputValue`, `isLoading`",
+      "done": false
+    },
+    {
+      "id": "10",
+      "description": "3.2 Implementar el bot├│n flotante circular (glassmorphism, bottom-right, `z-index: 9000`) que toggle `isOpen`",
+      "done": false
+    },
+    {
+      "id": "11",
+      "description": "3.3 Implementar la ventana de chat con: header con nombre del bot y bot├│n X, ├írea de mensajes con scroll, ├írea de input",
+      "done": false
+    },
+    {
+      "id": "12",
+      "description": "3.4 Aplicar estilos glassmorphism consistent con el design system de la tienda (`--color-surface`, `--color-primary`, `--color-border`, `backdrop-filter: blur`)",
+      "done": false
+    },
+    {
+      "id": "13",
+      "description": "3.5 Implementar el tipo `Message = { role: 'user' | 'bot', text: string, products?: Product[] }` y renderizar mensajes con distinci├│n visual (user: derecha/primario, bot: izquierda/superficie)",
+      "done": false
+    },
+    {
+      "id": "14",
+      "description": "3.6 Implementar tarjeta de producto en el chat: imagen, nombre, precio en EUR, bot├│n \"Ver producto\" que hace `window.location.href = /products/${id}`",
+      "done": false
+    },
+    {
+      "id": "15",
+      "description": "3.7 Implementar indicador de \"pensando...\" animado (3 puntos pulsantes) mientras `isLoading === true`",
+      "done": false
+    },
+    {
+      "id": "16",
+      "description": "3.8 A├▒adir scroll autom├ítico al ├║ltimo mensaje al actualizar `messages`",
+      "done": false
+    },
+    {
+      "id": "17",
+      "description": "4.1 En `ChatBot.tsx`, suscribirse al `user` del `AuthContext`. Cuando cambia de `null` a un valor, comprobar `sessionStorage.getItem('chatbot-greeted')`",
+      "done": false
+    },
+    {
+      "id": "18",
+      "description": "4.2 Si no hay flag en sessionStorage, abrir el chat (`setIsOpen(true)`), a├▒adir el mensaje de saludo personalizado y guardar `sessionStorage.setItem('chatbot-greeted', 'true')`",
+      "done": false
+    },
+    {
+      "id": "19",
+      "description": "4.3 Conectar el formulario de env├¡o con el endpoint `/api/ai-chat` via `fetch` y actualizar `messages` con la respuesta",
+      "done": false
+    },
+    {
+      "id": "20",
+      "description": "5.1 Importar y a├▒adir `<ChatBot client:only=\"react\" />` al final del `<body>` en `src/layouts/Layout.astro`",
+      "done": false
+    },
+    {
+      "id": "21",
+      "description": "5.2 Verificar que el `AuthContext` y `CartContext` est├ín disponibles como providers antes del componente ChatBot (revisar el wrapper actual)",
+      "done": false
+    },
+    {
+      "id": "22",
+      "description": "6.1 Verificar que el widget NO aparece cuando el usuario no est├í autenticado",
+      "done": false
+    },
+    {
+      "id": "23",
+      "description": "6.2 Verificar que el bot saluda con el nombre/email al hacer login por primera vez en la sesi├│n",
+      "done": false
+    },
+    {
+      "id": "24",
+      "description": "6.3 Enviar \"quiero un teclado\" y confirmar que aparecen tarjetas de productos relevantes",
+      "done": false
+    },
+    {
+      "id": "25",
+      "description": "6.4 Confirmar que el bot├│n \"Ver producto\" navega correctamente a `/products/[id]`",
+      "done": false
+    },
+    {
+      "id": "26",
+      "description": "6.5 Verificar que al recargar la p├ígina tras login, el chat NO se abre autom├íticamente (sessionStorage funciona)",
+      "done": false
+    },
+    {
+      "id": "27",
+      "description": "6.6 Probar en modo claro y oscuro que el chatbot respeta los colores del tema",
+      "done": false
+    }
+  ],
+  "state": "ready",
+  "instruction": "Read context files, work through pending tasks, mark complete as you go.\nPause if you hit blockers or need clarification."
+}
