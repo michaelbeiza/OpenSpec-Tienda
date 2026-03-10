@@ -27,6 +27,7 @@ export default function Navbar({ currentPath }: NavbarProps) {
         { name: 'Mujer', icon: '👗', subcategories: ['Vestidos', 'Tops', 'Faldas', 'Calzado'] },
         { name: 'Deportes', icon: '🏃‍♂️', subcategories: ['Running', 'Gimnasio', 'Fútbol', 'Yoga'] },
         { name: 'Accesorios', icon: '🎒', subcategories: ['Mochilas', 'Relojes', 'Gafas', 'Gorras'] },
+        { name: 'Tecnología', icon: '💻', subcategories: ['Laptops', 'Móviles', 'Audio', 'Gaming'] },
     ];
 
     return (
@@ -164,14 +165,14 @@ export default function Navbar({ currentPath }: NavbarProps) {
                     </button>
                     {categoriesTree.map(cat => (
                         <div key={cat.name}>
-                            <button className="cat-btn">
+                            <button className="cat-btn" onClick={() => window.location.href = `/categories/${cat.name}`}>
                                 <span>{cat.icon}</span> {cat.name}
                                 {cat.isNew && <span style={{ marginLeft: 'auto', background: 'var(--color-accent)', fontSize: 10, padding: '2px 6px', borderRadius: 4, color: 'white' }}>NUEVO</span>}
                             </button>
                             {cat.subcategories && (
                                 <div className="subcat-list">
                                     {cat.subcategories.map(sub => (
-                                        <a href={`/products?cat=${sub.toLowerCase()}`} key={sub} className="subcat-link">{sub}</a>
+                                        <a href={`/categories/${sub}`} key={sub} className="subcat-link">{sub}</a>
                                     ))}
                                 </div>
                             )}

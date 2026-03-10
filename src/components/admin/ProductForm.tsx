@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { Product } from '../../lib/types';
+import { CATEGORIES } from '../../lib/constants';
 
 interface Props {
     product: Product | null;
@@ -9,13 +10,20 @@ interface Props {
 }
 
 export default function ProductForm({ product, onClose, onSaved }: Props) {
-    const [form, setForm] = useState({ name: '', description: '', price: '', inventory: '', image_url: '' });
+    const [form, setForm] = useState({ name: '', description: '', price: '', inventory: '', image_url: '', category: '' });
     const [error, setError] = useState('');
     const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         if (product) {
-            setForm({ name: product.name, description: product.description, price: String(product.price), inventory: String(product.inventory), image_url: product.image_url ?? '' });
+            setForm({
+                name: product.name,
+                description: product.description,
+                price: String(product.price),
+                inventory: String(product.inventory),
+                image_url: product.image_url ?? '',
+                category: product.category ?? ''
+            });
         }
     }, [product]);
 
@@ -28,7 +36,14 @@ export default function ProductForm({ product, onClose, onSaved }: Props) {
         if (isNaN(inventory) || inventory < 0) { setError('El stock debe ser mayor o igual a 0.'); return; }
 
         setSaving(true);
-        const payload = { name: form.name.trim(), description: form.description.trim(), price, inventory, image_url: form.image_url.trim() || null };
+        const payload = {
+            name: form.name.trim(),
+            description: form.description.trim(),
+            price,
+            inventory,
+            image_url: form.image_url.trim() || null,
+            category: form.category.trim()
+        };
         const { error: dbErr } = product
             ? await supabase.from('products').update(payload).eq('id', product.id)
             : await supabase.from('products').insert(payload);
@@ -38,11 +53,12 @@ export default function ProductForm({ product, onClose, onSaved }: Props) {
         setSaving(false);
     };
 
-    const fields: { key: keyof typeof form; label: string; type: string; required: boolean; min?: string; step?: string }[] = [
+    const fields: { key: keyof typeof form; label: string; type: string; required: boolean; min?: string; step?: string; options?: string[] }[] = [
         { key: 'name', label: 'Nombre del producto', type: 'text', required: true },
         { key: 'description', label: 'Descripción', type: 'text', required: true },
         { key: 'price', label: 'Precio (€)', type: 'number', required: true, min: '0', step: '0.01' },
         { key: 'inventory', label: 'Stock', type: 'number', required: true, min: '0' },
+        { key: 'category', label: 'Categoría', type: 'select', required: true, options: CATEGORIES },
         { key: 'image_url', label: 'URL de imagen (opcional)', type: 'url', required: false },
     ];
 
@@ -59,9 +75,21 @@ export default function ProductForm({ product, onClose, onSaved }: Props) {
                     {fields.map(f => (
                         <div key={f.key}>
                             <label className="block text-sm font-medium text-gray-300 mb-1.5">{f.label}</label>
-                            <input type={f.type} value={form[f.key]} onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
-                                required={f.required} min={f.min} step={f.step} placeholder={f.label}
-                                className="w-full bg-[#0d0d1a] border border-[#2a2a4a] text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#7c6bff] transition-colors placeholder-gray-600" />
+                            {f.type === 'select' ? (
+                                <select
+                                    value={form[f.key]}
+                                    onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
+                                    required={f.required}
+                                    className="w-full bg-[#0d0d1a] border border-[#2a2a4a] text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#7c6bff] transition-colors appearance-none"
+                                >
+                                    <option value="" disabled>Seleccionar categoría</option>
+                                    {f.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                </select>
+                            ) : (
+                                <input type={f.type} value={form[f.key]} onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
+                                    required={f.required} min={f.min} step={f.step} placeholder={f.label}
+                                    className="w-full bg-[#0d0d1a] border border-[#2a2a4a] text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#7c6bff] transition-colors placeholder-gray-600" />
+                            )}
                         </div>
                     ))}
 
