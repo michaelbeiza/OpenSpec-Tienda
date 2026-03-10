@@ -59,8 +59,10 @@ export default function CategoryPage({ category }: CategoryPageProps) {
                         fontWeight: 800,
                         lineHeight: 1.1,
                         marginBottom: 16,
-                        background: 'linear-gradient(135deg, #fff 30%, var(--color-primary))',
+                        background: 'linear-gradient(135deg, var(--color-text) 40%, var(--color-primary))',
+                        backgroundClip: 'text',
                         WebkitBackgroundClip: 'text',
+                        color: 'transparent',
                         WebkitTextFillColor: 'transparent',
                     }}>
                         {category}
@@ -76,7 +78,7 @@ export default function CategoryPage({ category }: CategoryPageProps) {
                             width: 40,
                             height: 40,
                             borderRadius: '50%',
-                            border: '3px solid rgba(255,255,255,0.1)',
+                            border: '3px solid var(--color-glass-border)',
                             borderTopColor: 'var(--color-primary)',
                             animation: 'spin 1s linear infinite'
                         }} />
@@ -103,9 +105,9 @@ export default function CategoryPage({ category }: CategoryPageProps) {
                     <div style={{
                         textAlign: 'center',
                         padding: '80px 24px',
-                        background: 'rgba(255,255,255,0.02)',
+                        background: 'var(--color-glass)',
                         borderRadius: 'var(--radius)',
-                        border: '1px dashed rgba(255,255,255,0.1)'
+                        border: '1px dashed var(--color-glass-border)'
                     }}>
                         <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.5 }}>📭</div>
                         <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 8 }}>No hay productos aún</h3>
@@ -125,18 +127,18 @@ export default function CategoryPage({ category }: CategoryPageProps) {
                                 display: 'flex',
                                 flexDirection: 'column',
                                 transition: 'transform 0.3s, box-shadow 0.3s',
-                                border: '1px solid rgba(255,255,255,0.05)',
-                                background: 'rgba(255,255,255,0.02)',
+                                border: '1px solid var(--color-border)',
+                                background: 'var(--color-surface)',
                             }}
                                 onMouseOver={e => {
                                     e.currentTarget.style.transform = 'translateY(-4px)';
-                                    e.currentTarget.style.boxShadow = '0 12px 40px rgba(124,107,255,0.15)';
-                                    e.currentTarget.style.border = '1px solid rgba(124,107,255,0.3)';
+                                    e.currentTarget.style.boxShadow = 'var(--shadow)';
+                                    e.currentTarget.style.border = '1px solid var(--color-primary)';
                                 }}
                                 onMouseOut={e => {
                                     e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
-                                    e.currentTarget.style.border = '1px solid rgba(255,255,255,0.05)';
+                                    e.currentTarget.style.boxShadow = 'none';
+                                    e.currentTarget.style.border = '1px solid var(--color-border)';
                                 }}>
                                 <a href={`/products/${p.id}`} style={{ display: 'block', position: 'relative', background: 'rgba(0,0,0,0.5)' }}>
                                     {p.image_url ? (
@@ -145,7 +147,7 @@ export default function CategoryPage({ category }: CategoryPageProps) {
                                             onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
                                         />
                                     ) : (
-                                        <div style={{ width: '100%', height: 240, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48, background: 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2))' }}>
+                                        <div style={{ width: '100%', height: 240, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48, background: 'var(--color-glass)' }}>
                                             🛍️
                                         </div>
                                     )}
@@ -172,10 +174,10 @@ export default function CategoryPage({ category }: CategoryPageProps) {
                                                 textTransform: 'uppercase',
                                                 letterSpacing: '0.5px',
                                                 padding: '4px 8px',
-                                                background: 'rgba(255,255,255,0.05)',
+                                                background: 'var(--color-glass)',
                                                 borderRadius: 4,
                                                 color: 'var(--color-text-muted)',
-                                                border: '1px solid rgba(255,255,255,0.1)'
+                                                border: '1px solid var(--color-glass-border)'
                                             }}>
                                                 {p.category}
                                             </span>

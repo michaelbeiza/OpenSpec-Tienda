@@ -88,8 +88,10 @@ export default function ProductsPage() {
                         fontWeight: 800,
                         lineHeight: 1.1,
                         marginBottom: 16,
-                        background: 'linear-gradient(135deg, #fff 30%, var(--color-primary))',
+                        background: 'linear-gradient(135deg, var(--color-text) 40%, var(--color-primary))',
+                        backgroundClip: 'text',
                         WebkitBackgroundClip: 'text',
+                        color: 'transparent',
                         WebkitTextFillColor: 'transparent',
                     }}>
                         Catálogo de Productos
@@ -105,11 +107,11 @@ export default function ProductsPage() {
                     flexDirection: 'column',
                     gap: 20,
                     marginBottom: 40,
-                    background: 'rgba(255,255,255,0.03)',
+                    background: 'var(--color-glass)',
                     padding: 24,
                     borderRadius: 'var(--radius)',
-                    border: '1px solid rgba(255,255,255,0.05)',
-                    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                    border: '1px solid var(--color-glass-border)',
+                    boxShadow: 'var(--shadow)',
                     backdropFilter: 'blur(10px)',
                 }}>
                     {/* Category Tabs with Navigation Arrows */}
@@ -164,8 +166,8 @@ export default function ProductsPage() {
                                     style={{
                                         padding: '8px 20px',
                                         borderRadius: 30,
-                                        border: cat === selectedCategory ? '1px solid var(--color-primary)' : '1px solid rgba(255,255,255,0.1)',
-                                        background: cat === selectedCategory ? 'rgba(124,107,255,0.15)' : 'rgba(0,0,0,0.2)',
+                                        border: cat === selectedCategory ? '1px solid var(--color-primary)' : '1px solid var(--color-border)',
+                                        background: cat === selectedCategory ? 'rgba(124,107,255,0.15)' : 'var(--color-input-bg)',
                                         color: cat === selectedCategory ? '#fff' : 'var(--color-text-muted)',
                                         fontWeight: cat === selectedCategory ? 700 : 500,
                                         whiteSpace: 'nowrap',
@@ -175,14 +177,14 @@ export default function ProductsPage() {
                                     }}
                                     onMouseOver={e => {
                                         if (cat !== selectedCategory) {
-                                            e.currentTarget.style.color = '#fff';
-                                            e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                                            e.currentTarget.style.color = 'var(--color-text)';
+                                            e.currentTarget.style.background = 'var(--color-glass)';
                                         }
                                     }}
                                     onMouseOut={e => {
                                         if (cat !== selectedCategory) {
                                             e.currentTarget.style.color = 'var(--color-text-muted)';
-                                            e.currentTarget.style.background = 'rgba(0,0,0,0.2)';
+                                            e.currentTarget.style.background = 'var(--color-input-bg)';
                                         }
                                     }}
                                 >
@@ -229,8 +231,8 @@ export default function ProductsPage() {
                                     width: '100%',
                                     padding: '12px 16px 12px 48px',
                                     borderRadius: 'var(--radius)',
-                                    backgroundColor: 'rgba(0,0,0,0.2)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    backgroundColor: 'var(--color-input-bg)',
+                                    border: '1px solid var(--color-border)',
                                     color: 'var(--color-text)',
                                     outline: 'none',
                                     transition: 'all 0.2s',
@@ -249,8 +251,8 @@ export default function ProductsPage() {
                                     width: 100,
                                     padding: '12px',
                                     borderRadius: 'var(--radius)',
-                                    backgroundColor: 'rgba(0,0,0,0.2)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    backgroundColor: 'var(--color-input-bg)',
+                                    border: '1px solid var(--color-border)',
                                     color: 'var(--color-text)',
                                     outline: 'none',
                                     fontSize: 14
@@ -266,8 +268,8 @@ export default function ProductsPage() {
                                     width: 100,
                                     padding: '12px',
                                     borderRadius: 'var(--radius)',
-                                    backgroundColor: 'rgba(0,0,0,0.2)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    backgroundColor: 'var(--color-input-bg)',
+                                    border: '1px solid var(--color-border)',
                                     color: 'var(--color-text)',
                                     outline: 'none',
                                     fontSize: 14
@@ -281,8 +283,8 @@ export default function ProductsPage() {
                                 style={{
                                     padding: '12px 20px',
                                     background: 'transparent',
-                                    border: '1px solid rgba(255,255,255,0.2)',
-                                    color: 'white',
+                                    border: '1px solid var(--color-border)',
+                                    color: 'var(--color-text)',
                                     borderRadius: 'var(--radius)',
                                     fontSize: 14,
                                     cursor: 'pointer',
@@ -303,7 +305,7 @@ export default function ProductsPage() {
                             width: 40,
                             height: 40,
                             borderRadius: '50%',
-                            border: '3px solid rgba(255,255,255,0.1)',
+                            border: '3px solid var(--color-glass-border)',
                             borderTopColor: 'var(--color-primary)',
                             animation: 'spin 1s linear infinite'
                         }} />
@@ -314,9 +316,9 @@ export default function ProductsPage() {
                     <div style={{
                         textAlign: 'center',
                         padding: '80px 24px',
-                        background: 'rgba(255,255,255,0.02)',
+                        background: 'var(--color-glass)',
                         borderRadius: 'var(--radius)',
-                        border: '1px dashed rgba(255,255,255,0.1)'
+                        border: '1px dashed var(--color-glass-border)'
                     }}>
                         <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.5 }}>📭</div>
                         <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 8 }}>No hay resultados</h3>
@@ -335,18 +337,18 @@ export default function ProductsPage() {
                                 display: 'flex',
                                 flexDirection: 'column',
                                 transition: 'transform 0.3s, box-shadow 0.3s',
-                                border: '1px solid rgba(255,255,255,0.05)',
-                                background: 'rgba(255,255,255,0.02)',
+                                border: '1px solid var(--color-border)',
+                                background: 'var(--color-surface)',
                             }}
                                 onMouseOver={e => {
                                     e.currentTarget.style.transform = 'translateY(-4px)';
-                                    e.currentTarget.style.boxShadow = '0 12px 40px rgba(124,107,255,0.15)';
-                                    e.currentTarget.style.border = '1px solid rgba(124,107,255,0.3)';
+                                    e.currentTarget.style.boxShadow = 'var(--shadow)';
+                                    e.currentTarget.style.border = '1px solid var(--color-primary)';
                                 }}
                                 onMouseOut={e => {
                                     e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
-                                    e.currentTarget.style.border = '1px solid rgba(255,255,255,0.05)';
+                                    e.currentTarget.style.boxShadow = 'none';
+                                    e.currentTarget.style.border = '1px solid var(--color-border)';
                                 }}>
                                 <a href={`/products/${p.id}`} style={{ display: 'block', position: 'relative', background: 'rgba(0,0,0,0.5)' }}>
                                     {p.image_url ? (
@@ -355,7 +357,7 @@ export default function ProductsPage() {
                                             onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
                                         />
                                     ) : (
-                                        <div style={{ width: '100%', height: 240, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48, background: 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2))' }}>
+                                        <div style={{ width: '100%', height: 240, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48, background: 'var(--color-glass)' }}>
                                             🛍️
                                         </div>
                                     )}
@@ -398,10 +400,10 @@ export default function ProductsPage() {
                                                 textTransform: 'uppercase',
                                                 letterSpacing: '0.5px',
                                                 padding: '4px 8px',
-                                                background: 'rgba(255,255,255,0.05)',
+                                                background: 'var(--color-glass)',
                                                 borderRadius: 4,
                                                 color: 'var(--color-text-muted)',
-                                                border: '1px solid rgba(255,255,255,0.1)'
+                                                border: '1px solid var(--color-glass-border)'
                                             }}>
                                                 {p.category}
                                             </span>

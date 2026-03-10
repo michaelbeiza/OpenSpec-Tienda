@@ -51,8 +51,10 @@ export default function LoginPage() {
                     fontSize: '2rem',
                     fontWeight: 800,
                     marginBottom: 8,
-                    background: 'linear-gradient(135deg, #fff 40%, var(--color-primary))',
+                    background: 'linear-gradient(135deg, var(--color-text) 40%, var(--color-primary))',
+                    backgroundClip: 'text',
                     WebkitBackgroundClip: 'text',
+                    color: 'transparent',
                     WebkitTextFillColor: 'transparent',
                 }}>
                     Bienvenido de nuevo

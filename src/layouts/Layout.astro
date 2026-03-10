@@ -21,6 +21,21 @@ const { title = "Tienda Online", description = "Tu tienda favorita" } =
       rel="stylesheet"
     />
     <title>{title} | Tienda Online</title>
+    <script is:inline>
+      const theme = (() => {
+        if (
+          typeof localStorage !== "undefined" &&
+          localStorage.getItem("theme")
+        ) {
+          return localStorage.getItem("theme");
+        }
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          return "dark";
+        }
+        return "light";
+      })();
+      document.documentElement.setAttribute("data-theme", theme);
+    </script>
   </head>
   <body>
     <slot />
@@ -37,6 +52,7 @@ const { title = "Tienda Online", description = "Tu tienda favorita" } =
   }
 
   :root {
+    /* Dark Theme (Default) */
     --color-bg: #0a0a0f;
     --color-surface: #12121a;
     --color-surface2: #1a1a28;
@@ -49,10 +65,30 @@ const { title = "Tienda Online", description = "Tu tienda favorita" } =
     --color-success: #4ade80;
     --color-warning: #fbbf24;
     --color-danger: #f87171;
+    --color-nav-bg: rgba(10, 10, 15, 0.85);
+    --color-glass: rgba(255, 255, 255, 0.03);
+    --color-glass-border: rgba(255, 255, 255, 0.08);
+    --color-input-bg: rgba(0, 0, 0, 0.2);
     --radius: 12px;
     --radius-sm: 8px;
     --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
     --transition: 0.2s ease;
+  }
+
+  :root[data-theme="light"] {
+    --color-bg: #f8f9fa;
+    --color-surface: #ffffff;
+    --color-surface2: #f1f3f5;
+    --color-border: rgba(0, 0, 0, 0.08);
+    --color-text: #1a1a21;
+    --color-text-muted: #5f6368;
+    --color-primary: #6355ff;
+    --color-primary-hover: #5046e5;
+    --color-nav-bg: rgba(255, 255, 255, 0.85);
+    --color-glass: rgba(0, 0, 0, 0.02);
+    --color-glass-border: rgba(0, 0, 0, 0.05);
+    --color-input-bg: #ffffff;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   }
 
   body {

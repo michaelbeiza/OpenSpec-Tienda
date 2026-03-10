@@ -57,8 +57,8 @@ export default function ProductDetailPage({ productId }: Props) {
     const avgRating = reviews.length ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : null;
 
     if (loading) return (
-        <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(124,107,255,0.05), transparent)' }}>
-            <div style={{ width: 40, height: 40, borderRadius: '50%', border: '3px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--color-primary)', animation: 'spin 1s linear infinite' }} />
+        <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg)' }}>
+            <div style={{ width: 40, height: 40, borderRadius: '50%', border: '3px solid var(--color-glass-border)', borderTopColor: 'var(--color-primary)', animation: 'spin 1s linear infinite' }} />
             <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
         </div>
     );
@@ -101,8 +101,8 @@ export default function ProductDetailPage({ productId }: Props) {
                             aspectRatio: '1/1',
                             borderRadius: 'var(--radius)',
                             overflow: 'hidden',
-                            background: 'rgba(255,255,255,0.02)',
-                            border: '1px solid rgba(255,255,255,0.05)',
+                            background: 'var(--color-glass)',
+                            border: '1px solid var(--color-glass-border)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -145,7 +145,7 @@ export default function ProductDetailPage({ productId }: Props) {
                                         height: 80,
                                         borderRadius: 'var(--radius)',
                                         border: activeImageIdx === idx ? '2px solid var(--color-primary)' : '2px solid transparent',
-                                        background: 'rgba(255,255,255,0.03)',
+                                        background: 'var(--color-glass)',
                                         overflow: 'hidden',
                                         cursor: 'pointer',
                                         padding: 0,
@@ -167,11 +167,21 @@ export default function ProductDetailPage({ productId }: Props) {
                     {/* Right: Details Component */}
                     <div style={{ display: 'flex', flexDirection: 'column', padding: '10px 0' }}>
                         <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-                            <div className="badge" style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--color-text-muted)', border: '1px solid rgba(255,255,255,0.05)' }}>REF: #{product.id.split('-')[0].toUpperCase()}</div>
+                            <div className="badge" style={{ background: 'var(--color-glass)', color: 'var(--color-text-muted)', border: '1px solid var(--color-glass-border)' }}>REF: #{product.id.split('-')[0].toUpperCase()}</div>
                             <div className="badge badge-primary">{product.category}</div>
                         </div>
 
-                        <h1 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, lineHeight: 1.1, marginBottom: 16, color: 'white' }}>
+                        <h1 style={{
+                            fontSize: 'clamp(2rem, 4vw, 3rem)',
+                            fontWeight: 800,
+                            lineHeight: 1.1,
+                            marginBottom: 16,
+                            background: 'linear-gradient(135deg, var(--color-text) 40%, var(--color-primary))',
+                            backgroundClip: 'text',
+                            WebkitBackgroundClip: 'text',
+                            color: 'transparent',
+                            WebkitTextFillColor: 'transparent',
+                        }}>
                             {product.name}
                         </h1>
 
@@ -196,11 +206,11 @@ export default function ProductDetailPage({ productId }: Props) {
                                 <span style={{ fontWeight: 500 }}>Disponible en stock ({product.inventory} unidades)</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'var(--color-text)' }}>
-                                <span style={{ padding: 8, background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }}>🚚</span>
+                                <span style={{ padding: 8, background: 'var(--color-glass)', borderRadius: '50%' }}>🚚</span>
                                 <span style={{ fontWeight: 500 }}>Envío rápido en 24/48h</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'var(--color-text)' }}>
-                                <span style={{ padding: 8, background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }}>🛡️</span>
+                                <span style={{ padding: 8, background: 'var(--color-glass)', borderRadius: '50%' }}>🛡️</span>
                                 <span style={{ fontWeight: 500 }}>3 años de garantía europea</span>
                             </div>
                         </div>
@@ -237,23 +247,23 @@ export default function ProductDetailPage({ productId }: Props) {
 
                 {/* Additional Content Tabs */}
                 <div style={{ marginTop: 80 }}>
-                    <div style={{ display: 'flex', gap: 32, borderBottom: '1px solid rgba(255,255,255,0.1)', marginBottom: 32, overflowX: 'auto' }}>
+                    <div style={{ display: 'flex', gap: 32, borderBottom: '1px solid var(--color-border)', marginBottom: 32, overflowX: 'auto' }}>
                         <button
                             onClick={() => setActiveTab('features')}
-                            style={{ padding: '16px 8px', background: 'transparent', border: 'none', borderBottom: activeTab === 'features' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'features' ? 'white' : 'var(--color-text-muted)', fontWeight: 700, fontSize: 16, cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
+                            style={{ padding: '16px 8px', background: 'transparent', border: 'none', borderBottom: activeTab === 'features' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'features' ? 'var(--color-text)' : 'var(--color-text-muted)', fontWeight: 700, fontSize: 16, cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
                         >
                             Características
                         </button>
                         <button
                             onClick={() => setActiveTab('reviews')}
-                            style={{ padding: '16px 8px', background: 'transparent', border: 'none', borderBottom: activeTab === 'reviews' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'reviews' ? 'white' : 'var(--color-text-muted)', fontWeight: 700, fontSize: 16, cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
+                            style={{ padding: '16px 8px', background: 'transparent', border: 'none', borderBottom: activeTab === 'reviews' ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === 'reviews' ? 'var(--color-text)' : 'var(--color-text-muted)', fontWeight: 700, fontSize: 16, cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
                         >
                             Valoraciones ({reviews.length})
                         </button>
                     </div>
 
                     {activeTab === 'features' && (
-                        <div className="card" style={{ padding: 40, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div className="card" style={{ padding: 40, background: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
                             <h3 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24 }}>Especificaciones Técnicas</h3>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
                                 {[
@@ -266,9 +276,9 @@ export default function ProductDetailPage({ productId }: Props) {
                                     ['Peso', 'Variable según talla/tipo'],
                                     ['ID Referencia', product.id]
                                 ].map(([k, v]) => (
-                                    <div key={k} style={{ display: 'flex', padding: 16, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <div key={k} style={{ display: 'flex', padding: 16, borderBottom: '1px solid var(--color-border)' }}>
                                         <span style={{ color: 'var(--color-text-muted)', width: 140 }}>{k}</span>
-                                        <span style={{ fontWeight: 600 }}>{v}</span>
+                                        <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>{v}</span>
                                     </div>
                                 ))}
                             </div>
@@ -276,19 +286,19 @@ export default function ProductDetailPage({ productId }: Props) {
                     )}
 
                     {activeTab === 'reviews' && (
-                        <div className="card" style={{ padding: 40, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div className="card" style={{ padding: 40, background: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
                             <h3 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24 }}>Opiniones de clientes</h3>
 
                             {user && (
-                                <form onSubmit={handleReview} style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 'var(--radius)', padding: 24, marginBottom: 40 }}>
+                                <form onSubmit={handleReview} style={{ background: 'var(--color-input-bg)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius)', padding: 24, marginBottom: 40 }}>
                                     <h4 style={{ fontWeight: 600, marginBottom: 16 }}>Dejar una valoración</h4>
                                     <div style={{ marginBottom: 16 }}>
                                         <label style={{ display: 'block', marginBottom: 8, fontSize: 14, color: 'var(--color-text-muted)' }}>Puntuación</label>
-                                        <select value={rating} onChange={e => setRating(+e.target.value)} style={{ padding: '10px 16px', borderRadius: 'var(--radius)', background: 'var(--color-surface)', color: 'white', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                        <select value={rating} onChange={e => setRating(+e.target.value)} style={{ padding: '10px 16px', borderRadius: 'var(--radius)', background: 'var(--color-bg)', color: 'var(--color-text)', border: '1px solid var(--color-border)' }}>
                                             {[5, 4, 3, 2, 1].map(n => <option key={n} value={n}>{'★'.repeat(n)} {n}/5</option>)}
                                         </select>
                                     </div>
-                                    <textarea value={comment} onChange={e => setComment(e.target.value)} placeholder="Comparte tu opinión sobre este producto..." required style={{ width: '100%', padding: '16px', borderRadius: 'var(--radius)', background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', marginBottom: 16, resize: 'vertical', minHeight: 100 }} />
+                                    <textarea value={comment} onChange={e => setComment(e.target.value)} placeholder="Comparte tu opinión sobre este producto..." required style={{ width: '100%', padding: '16px', borderRadius: 'var(--radius)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', marginBottom: 16, resize: 'vertical', minHeight: 100 }} />
                                     <button type="submit" className="btn btn-primary" disabled={submitting}>{submitting ? 'Enviando...' : 'Publicar reseña'}</button>
                                 </form>
                             )}
@@ -298,11 +308,11 @@ export default function ProductDetailPage({ productId }: Props) {
                             ) : (
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                                     {reviews.map(r => (
-                                        <div key={r.id} style={{ background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 'var(--radius)', padding: 24 }}>
+                                        <div key={r.id} style={{ background: 'var(--color-glass)', border: '1px solid var(--color-glass-border)', borderRadius: 'var(--radius)', padding: 24 }}>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                                                     <span style={{ color: 'var(--color-warning)' }}>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
-                                                    <span style={{ fontWeight: 600, color: 'white' }}>{r.user?.email.split('@')[0]}</span>
+                                                    <span style={{ fontWeight: 600, color: 'var(--color-text)' }}>{r.user?.email.split('@')[0]}</span>
                                                 </div>
                                                 <span style={{ color: 'var(--color-text-muted)', fontSize: 14 }}>{new Date(r.created_at).toLocaleDateString('es-ES')}</span>
                                             </div>
