@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { Product } from '../../lib/types';
 import { useCart } from '../../context/CartContext';
+import { CATEGORIES } from '../../lib/constants';
 
 export default function ProductsPage() {
     const [products, setProducts] = useState<Product[]>([]);
@@ -13,8 +14,35 @@ export default function ProductsPage() {
     const [selectedCategory, setSelectedCategory] = useState('Todas');
     const { addItem } = useCart();
     const [toast, setToast] = useState('');
+    const scrollRef = React.useRef<HTMLDivElement>(null);
+    const [showLeftArrow, setShowLeftArrow] = useState(false);
+    const [showRightArrow, setShowRightArrow] = useState(false);
 
-    const categories = ['Todas', 'Zapatillas', 'Ropa', 'Accesorios', 'Tecnología', 'Ofertas'];
+    const categories = ['Todas', ...CATEGORIES];
+
+    const checkScroll = () => {
+        if (scrollRef.current) {
+            const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+            setShowLeftArrow(scrollLeft > 10);
+            setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10);
+        }
+    };
+
+    useEffect(() => {
+        checkScroll();
+        window.addEventListener('resize', checkScroll);
+        return () => window.removeEventListener('resize', checkScroll);
+    }, [products]);
+
+    const scroll = (direction: 'left' | 'right') => {
+        if (scrollRef.current) {
+            const scrollAmount = 200;
+            scrollRef.current.scrollBy({
+                left: direction === 'left' ? -scrollAmount : scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    };
 
     useEffect(() => {
         async function load() {
@@ -32,11 +60,8 @@ export default function ProductsPage() {
         if (minPrice) result = result.filter(p => p.price >= parseFloat(minPrice));
         if (maxPrice) result = result.filter(p => p.price <= parseFloat(maxPrice));
 
-        // Simular filtrado por categoría de manera estética. Como no tenemos el atributo "category" en bd,
-        // simplemente vaciamos o filtramos al azar si no es "Todas", de forma "dummy".
         if (selectedCategory !== 'Todas') {
-            // Mock filter for demonstration purposes
-            result = result.filter((_, i) => i % 2 !== 0);
+            result = result.filter(p => p.category === selectedCategory);
         }
 
         setFiltered(result);
@@ -87,49 +112,109 @@ export default function ProductsPage() {
                     boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
                     backdropFilter: 'blur(10px)',
                 }}>
-                    {/* Category Tabs */}
-                    <div style={{
-                        display: 'flex',
-                        gap: 12,
-                        overflowX: 'auto',
-                        paddingBottom: 8,
-                        WebkitOverflowScrolling: 'touch',
-                        scrollbarWidth: 'none',
-                        msOverflowStyle: 'none'
-                    }}>
-                        <style>{`div::-webkit-scrollbar { display: none; }`}</style>
-                        {categories.map(cat => (
+                    {/* Category Tabs with Navigation Arrows */}
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                        {showLeftArrow && (
                             <button
-                                key={cat}
-                                onClick={() => setSelectedCategory(cat)}
+                                onClick={() => scroll('left')}
                                 style={{
-                                    padding: '8px 20px',
-                                    borderRadius: 30,
-                                    border: cat === selectedCategory ? '1px solid var(--color-primary)' : '1px solid rgba(255,255,255,0.1)',
-                                    background: cat === selectedCategory ? 'rgba(124,107,255,0.15)' : 'rgba(0,0,0,0.2)',
-                                    color: cat === selectedCategory ? '#fff' : 'var(--color-text-muted)',
-                                    fontWeight: cat === selectedCategory ? 700 : 500,
-                                    whiteSpace: 'nowrap',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s ease',
-                                    boxShadow: cat === selectedCategory ? '0 4px 15px rgba(124,107,255,0.2)' : 'none'
-                                }}
-                                onMouseOver={e => {
-                                    if (cat !== selectedCategory) {
-                                        e.currentTarget.style.color = '#fff';
-                                        e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-                                    }
-                                }}
-                                onMouseOut={e => {
-                                    if (cat !== selectedCategory) {
-                                        e.currentTarget.style.color = 'var(--color-text-muted)';
-                                        e.currentTarget.style.background = 'rgba(0,0,0,0.2)';
-                                    }
+                                    position: 'absolute',
+                                    left: -12,
+                                    zIndex: 10,
+                                    width: 32,
+                                    height: 32,
+                                    borderRadius: '50%',
+                                    background: 'rgba(18,18,26,0.8)',
+                                    backdropFilter: 'blur(8px)',
+                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    color: 'white',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+                                    cursor: 'pointer'
                                 }}
                             >
-                                {cat}
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
                             </button>
-                        ))}
+                        )}
+
+                        <div
+                            ref={scrollRef}
+                            onScroll={checkScroll}
+                            style={{
+                                display: 'flex',
+                                gap: 12,
+                                overflowX: 'auto',
+                                paddingBottom: 8,
+                                WebkitOverflowScrolling: 'touch',
+                                scrollbarWidth: 'none',
+                                msOverflowStyle: 'none',
+                                scrollBehavior: 'smooth',
+                                width: '100%',
+                                paddingLeft: 4,
+                                paddingRight: 4
+                            }}
+                        >
+                            <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+                            {categories.map(cat => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setSelectedCategory(cat)}
+                                    style={{
+                                        padding: '8px 20px',
+                                        borderRadius: 30,
+                                        border: cat === selectedCategory ? '1px solid var(--color-primary)' : '1px solid rgba(255,255,255,0.1)',
+                                        background: cat === selectedCategory ? 'rgba(124,107,255,0.15)' : 'rgba(0,0,0,0.2)',
+                                        color: cat === selectedCategory ? '#fff' : 'var(--color-text-muted)',
+                                        fontWeight: cat === selectedCategory ? 700 : 500,
+                                        whiteSpace: 'nowrap',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s ease',
+                                        boxShadow: cat === selectedCategory ? '0 4px 15px rgba(124,107,255,0.2)' : 'none'
+                                    }}
+                                    onMouseOver={e => {
+                                        if (cat !== selectedCategory) {
+                                            e.currentTarget.style.color = '#fff';
+                                            e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                                        }
+                                    }}
+                                    onMouseOut={e => {
+                                        if (cat !== selectedCategory) {
+                                            e.currentTarget.style.color = 'var(--color-text-muted)';
+                                            e.currentTarget.style.background = 'rgba(0,0,0,0.2)';
+                                        }
+                                    }}
+                                >
+                                    {cat}
+                                </button>
+                            ))}
+                        </div>
+
+                        {showRightArrow && (
+                            <button
+                                onClick={() => scroll('right')}
+                                style={{
+                                    position: 'absolute',
+                                    right: -12,
+                                    zIndex: 10,
+                                    width: 32,
+                                    height: 32,
+                                    borderRadius: '50%',
+                                    background: 'rgba(18,18,26,0.8)',
+                                    backdropFilter: 'blur(8px)',
+                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    color: 'white',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </button>
+                        )}
                     </div>
 
                     <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
@@ -304,6 +389,21 @@ export default function ProductsPage() {
                                                 color: 'var(--color-primary)'
                                             }}>
                                                 €{p.price.toFixed(2)}
+                                            </span>
+                                        </div>
+                                        <div style={{ marginBottom: 12 }}>
+                                            <span style={{
+                                                fontSize: 11,
+                                                fontWeight: 700,
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.5px',
+                                                padding: '4px 8px',
+                                                background: 'rgba(255,255,255,0.05)',
+                                                borderRadius: 4,
+                                                color: 'var(--color-text-muted)',
+                                                border: '1px solid rgba(255,255,255,0.1)'
+                                            }}>
+                                                {p.category}
                                             </span>
                                         </div>
                                         <p style={{

@@ -166,7 +166,10 @@ export default function ProductDetailPage({ productId }: Props) {
 
                     {/* Right: Details Component */}
                     <div style={{ display: 'flex', flexDirection: 'column', padding: '10px 0' }}>
-                        <div className="badge" style={{ alignSelf: 'flex-start', background: 'rgba(255,255,255,0.05)', color: 'var(--color-text-muted)', marginBottom: 16, border: '1px solid rgba(255,255,255,0.05)' }}>REF: #{product.id.split('-')[0].toUpperCase()}</div>
+                        <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+                            <div className="badge" style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--color-text-muted)', border: '1px solid rgba(255,255,255,0.05)' }}>REF: #{product.id.split('-')[0].toUpperCase()}</div>
+                            <div className="badge badge-primary">{product.category}</div>
+                        </div>
 
                         <h1 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, lineHeight: 1.1, marginBottom: 16, color: 'white' }}>
                             {product.name}

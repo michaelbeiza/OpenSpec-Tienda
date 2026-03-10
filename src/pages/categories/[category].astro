@@ -1,0 +1,18 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CategoryWrapper from "../../components/wrappers/CategoryWrapper";
+import { CATEGORIES } from "../../lib/constants";
+
+export async function getStaticPaths() {
+    return CATEGORIES.map((category) => ({
+        params: { category },
+        props: { category },
+    }));
+}
+
+const { category } = Astro.params;
+---
+
+<Layout title={`${category} - Tienda Online`}>
+    <CategoryWrapper client:only="react" category={category as string} />
+</Layout>

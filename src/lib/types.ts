@@ -15,6 +15,7 @@ export interface Product {
     inventory: number;
     image_url: string | null;
     created_at: string;
+    category: string;
 }
 
 export interface Order {
