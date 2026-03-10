@@ -4,7 +4,7 @@
 
 [33m[1m16:23:05[22m [WARN] [router][39m The route "/login" is defined in both "src/pages/login/index.astro" and "src/pages/login.astro". A static route cannot be defined more than once.
 [33m[1m16:23:05[22m [WARN] [router][39m A collision will result in an hard error in following versions of Astro.
-[2m16:23:05[22m [34m[content][39m Syncing content
+[2m16:23:05[22m [34m[content][39m Sycing content
 [2m16:23:05[22m [34m[content][39m Synced content
 [2m16:23:05[22m [34m[types][39m Generated [2m49ms[22m
 [2m16:23:05[22m [34m[build][39m output: [34m"static"[39m

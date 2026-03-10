@@ -3,6 +3,7 @@ import { AuthProvider } from '../context/AuthContext';
 import { CartProvider } from '../context/CartContext';
 import { ThemeProvider } from '../context/ThemeContext';
 import Navbar from './Navbar';
+import ChatBot from './ChatBot';
 
 interface AppProps {
     children: ReactNode;
@@ -21,6 +22,8 @@ export default function App({ children, currentPath = '/' }: AppProps) {
                     <footer style={{ borderTop: '1px solid var(--color-border)', textAlign: 'center', color: 'var(--color-text-muted)', padding: '24px', fontSize: 13 }}>
                         © 2024 Tienda Online. Todos los derechos reservados.
                     </footer>
+                    {/* AI Chatbot widget - only shows when logged in */}
+                    <ChatBot />
                 </CartProvider>
             </AuthProvider>
         </ThemeProvider>
