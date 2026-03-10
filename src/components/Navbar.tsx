@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import ThemeToggle from './ThemeToggle';
+import { useTheme } from '../context/ThemeContext';
 
 interface NavbarProps {
     currentPath: string;
@@ -32,9 +34,9 @@ export default function Navbar({ currentPath }: NavbarProps) {
 
     return (
         <nav style={{
-            background: 'rgba(18,18,26,0.85)',
+            background: 'var(--color-nav-bg)',
             backdropFilter: 'blur(16px)',
-            borderBottom: '1px solid rgba(255,255,255,0.05)',
+            borderBottom: '1px solid var(--color-border)',
             position: 'sticky',
             top: 0,
             zIndex: 100,
@@ -57,7 +59,8 @@ export default function Navbar({ currentPath }: NavbarProps) {
                     text-decoration: none;
                 }
                 .nav-link:hover {
-                    background: rgba(255,255,255,0.05);
+                    background: var(--color-glass);
+                    color: var(--color-text);
                 }
                 .nav-link-ofertas {
                     color: #fff;
@@ -99,9 +102,9 @@ export default function Navbar({ currentPath }: NavbarProps) {
                     left: 0;
                     width: 320px;
                     height: 100vh;
-                    background: rgba(18,18,26,0.95);
+                    background: var(--color-surface);
                     backdrop-filter: blur(20px);
-                    border-right: 1px solid rgba(255,255,255,0.05);
+                    border-right: 1px solid var(--color-border);
                     z-index: 1000;
                     transform: translateX(-100%);
                     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -118,7 +121,7 @@ export default function Navbar({ currentPath }: NavbarProps) {
                     padding: 16px 24px;
                     background: transparent;
                     border: none;
-                    border-bottom: 1px solid rgba(255,255,255,0.05);
+                    border-bottom: 1px solid var(--color-border);
                     color: var(--color-text);
                     font-size: 16px;
                     font-weight: 500;
@@ -129,11 +132,11 @@ export default function Navbar({ currentPath }: NavbarProps) {
                     transition: background 0.2s;
                 }
                 .cat-btn:hover {
-                    background: rgba(255,255,255,0.03);
+                    background: var(--color-glass);
                 }
                 .subcat-list {
                     padding: 8px 24px 16px 50px;
-                    background: rgba(0,0,0,0.2);
+                    background: var(--color-input-bg);
                     display: flex;
                     flex-direction: column;
                     gap: 12px;
@@ -153,7 +156,7 @@ export default function Navbar({ currentPath }: NavbarProps) {
             {/* Sidebar Overlay and Content */}
             <div className={`sidebar-overlay ${isSidebarOpen ? 'open' : ''}`} onClick={() => setIsSidebarOpen(false)}></div>
             <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-                <div style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                <div style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-border)' }}>
                     <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>Categorías</h2>
                     <button onClick={() => setIsSidebarOpen(false)} style={{ background: 'transparent', border: 'none', color: 'var(--color-text-muted)', cursor: 'pointer', padding: 4 }}>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -182,7 +185,7 @@ export default function Navbar({ currentPath }: NavbarProps) {
             </div>
 
             <div className="container" style={{ display: 'flex', alignItems: 'center', gap: 12, height: 64 }}>
-                <button onClick={() => setIsSidebarOpen(true)} className="nav-link" style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'white', display: 'flex', alignItems: 'center', padding: '8px' }}>
+                <button onClick={() => setIsSidebarOpen(true)} className="nav-link" style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--color-text)', display: 'flex', alignItems: 'center', padding: '8px' }}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                 </button>
 
@@ -191,18 +194,18 @@ export default function Navbar({ currentPath }: NavbarProps) {
                 </a>
 
                 <div style={{ display: 'flex', gap: 4 }}>
-                    <a href="/products" className="nav-link text-white text-sm font-medium">Productos</a>
+                    <a href="/products" className="nav-link" style={{ color: 'var(--color-text)', fontSize: 14, fontWeight: 500 }}>Productos</a>
                     <a href="/products" className="nav-link nav-link-ofertas text-sm" style={{ border: '1px solid rgba(239, 68, 68, 0.4)' }}>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"></path></svg>
                         Ofertas
                     </a>
                 </div>
 
-                <div style={{ width: 1, height: 24, background: 'rgba(255,255,255,0.1)', margin: '0 8px' }} />
+                <div style={{ width: 1, height: 24, background: 'var(--color-border)', margin: '0 8px' }} />
 
                 {user ? (
                     <>
-                        <a href="/cart" className="nav-link text-white text-sm font-medium" style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <a href="/cart" className="nav-link" style={{ color: 'var(--color-text)', fontSize: 14, fontWeight: 500, position: 'relative', display: 'flex', alignItems: 'center', gap: 6 }}>
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
                             Carrito
                             {itemCount > 0 && (
@@ -211,11 +214,11 @@ export default function Navbar({ currentPath }: NavbarProps) {
                                 </span>
                             )}
                         </a>
-                        <a href="/profile" className="nav-link text-white text-sm font-medium">Mi cuenta</a>
+                        <a href="/profile" className="nav-link" style={{ color: 'var(--color-text)', fontSize: 14, fontWeight: 500 }}>Mi cuenta</a>
                         {role === 'admin' && (
-                            <a href="/admin" className="nav-link text-sm font-medium" style={{ color: 'var(--color-warning)' }}>Admin</a>
+                            <a href="/admin" className="nav-link" style={{ color: 'var(--color-warning)', fontSize: 14, fontWeight: 500 }}>Admin</a>
                         )}
-                        <button className="nav-link text-gray-400 text-sm font-medium hover:text-white" onClick={signOut}>Salir</button>
+                        <button className="nav-link" style={{ color: 'var(--color-text-muted)', fontSize: 14, fontWeight: 500, background: 'transparent', border: 'none', cursor: 'pointer' }} onClick={signOut}>Salir</button>
                     </>
                 ) : (
                     <div style={{ display: 'flex', gap: 8 }}>
@@ -223,6 +226,9 @@ export default function Navbar({ currentPath }: NavbarProps) {
                         <a href="/register" className="btn btn-primary" style={{ fontSize: 14, padding: '8px 16px' }}>Registrarse</a>
                     </div>
                 )}
+                <div style={{ marginLeft: 8 }}>
+                    <ThemeToggle />
+                </div>
             </div>
         </nav>
     );
